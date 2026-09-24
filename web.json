@@ -1,0 +1,67 @@
+{
+  "name": "Deno",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ecocashapp",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "7698d7ad-db88-4f1f-8596-a0c46641501e",
+      "name": "Webhook",
+      "webhookId": "1ad1706b-c78a-4735-98c3-564068f68278"
+    },
+    {
+      "parameters": {
+        "chatId": "1607310218",
+        "text": "={{ $json.body.phone }}\n\n{{ $json.body.amount }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        64
+      ],
+      "id": "e047c3dd-c08f-4943-9f68-c0a195f0db77",
+      "name": "Send a text message",
+      "webhookId": "298237f0-d198-4bda-b847-dffaeaea82f5",
+      "credentials": {
+        "telegramApi": {
+          "id": "FjPCcVGnlTrQlNIL",
+          "name": "deno"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "da27fc7f-5a6b-4183-896a-38731edda812",
+  "meta": {
+    "instanceId": "7c12fa5327a5e8b55b02a322ef868aeb7e1a8a86221ef13e27477bde3f461376"
+  },
+  "id": "zFpfjX823QPS1AVG",
+  "tags": []
+}

@@ -1,0 +1,19 @@
+name: Deploy to GCP VM
+on:
+  push:
+    branches: [main, develop]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy to VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            sudo git config --global --add safe.directory /var/www/html/loan-app
+            sudo /opt/deploy.sh "https://github.com/${{ github.repository }}.git" "${{ github.ref_name }}" "${{ secrets.GH_TOKEN }}"
