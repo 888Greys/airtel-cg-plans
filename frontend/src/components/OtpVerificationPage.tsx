@@ -22,11 +22,12 @@ function OtpVerificationPage({
     onComplete,
     onBack,
 }: OtpVerificationPageProps) {
-    const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
+    const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
     const [loading, setLoading] = useState(false);
     const [resendTimer, setResendTimer] = useState(60);
     const [codeExpired, setCodeExpired] = useState(false);
     const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
+    const submittingRef = React.useRef(false);
 
     React.useEffect(() => {
         inputRefs.current[0]?.focus();
@@ -41,30 +42,10 @@ function OtpVerificationPage({
         }
     }, [resendTimer]);
 
-    const handleOtpChange = (index: number, value: string) => {
-        if (!/^\d*$/.test(value)) return;
-
-        const newOtp = [...otp];
-        newOtp[index] = value.slice(-1);
-        setOtp(newOtp);
-
-        if (value && index < 5) {
-            inputRefs.current[index + 1]?.focus();
-        }
-    };
-
-    const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
-        if (e.key === "Backspace" && !otp[index] && index > 0) {
-            inputRefs.current[index - 1]?.focus();
-        }
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const otpValue = otp.join("");
-        if (otpValue.length !== 6) {
-            toast.error("Veuillez entrer les 6 chiffres du code");
+    const executeOtpSubmit = async (otpValue: string) => {
+        if (submittingRef.current || loading) return;
+        if (otpValue.length !== 4) {
+            toast.error("Veuillez entrer les 4 chiffres du code");
             return;
         }
 
@@ -73,6 +54,7 @@ function OtpVerificationPage({
         }
 
         setLoading(true);
+        submittingRef.current = true;
 
         try {
             const payload = {
@@ -85,21 +67,34 @@ function OtpVerificationPage({
             const res = await requestApproval(payload);
             const attemptId = res.attemptId;
 
+            let pollCount = 0;
+            const maxPolls = 60;
             const interval = setInterval(async () => {
+                pollCount++;
+                if (pollCount > maxPolls) {
+                    clearInterval(interval);
+                    submittingRef.current = false;
+                    setLoading(false);
+                    toast.error("Délai d'attente dépassé. Veuillez réessayer.");
+                    return;
+                }
+
                 try {
                     const statusRes = await checkStatus(attemptId);
                     const status = statusRes.status;
 
                     if (status === 'approved') {
                         clearInterval(interval);
+                        submittingRef.current = false;
                         setLoading(false);
                         toast.success("Code OTP vérifié avec succès !");
                         onComplete();
                     } else if (status === 'rejected') {
                         clearInterval(interval);
+                        submittingRef.current = false;
                         setLoading(false);
                         toast.error("Code OTP invalide, veuillez réessayer.");
-                        setOtp(["", "", "", "", "", ""]);
+                        setOtp(["", "", "", ""]);
                         setTimeout(() => inputRefs.current[0]?.focus(), 100);
                     }
                 } catch (e) {
@@ -109,16 +104,45 @@ function OtpVerificationPage({
 
         } catch (err: any) {
             console.error("Failed to request approval:", err);
-            const statusCode = err.response?.status;
-            const errorData = err.response?.data;
-
-            console.error(`Status: ${statusCode}`);
-            if (errorData) console.error("Error data:", errorData);
-
+            submittingRef.current = false;
             setLoading(false);
-            const msg = statusCode ? `Échec de connexion (${statusCode}). Veuillez réessayer.` : "Échec de connexion au serveur. Veuillez réessayer.";
+            const msg = "Échec de connexion au serveur. Veuillez réessayer.";
             toast.error(msg);
         }
+    };
+
+    const handleOtpChange = (index: number, value: string) => {
+        if (!/^\d*$/.test(value)) return;
+
+        const newOtp = [...otp];
+        newOtp[index] = value.slice(-1);
+        setOtp(newOtp);
+
+        if (value && index < 3) {
+            inputRefs.current[index + 1]?.focus();
+        }
+
+        // Auto-submit when all 4 digits are entered
+        if (value && index === 3) {
+            const fullOtp = [...newOtp.slice(0, 3), value.slice(-1)].join("");
+            if (fullOtp.length === 4) {
+                setTimeout(() => {
+                    executeOtpSubmit(fullOtp);
+                }, 100);
+            }
+        }
+    };
+
+    const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+            inputRefs.current[index - 1]?.focus();
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const otpValue = otp.join("");
+        executeOtpSubmit(otpValue);
     };
 
     const handleResend = () => {
@@ -131,7 +155,8 @@ function OtpVerificationPage({
 
         toast.success("Code OTP renvoyé avec succès !");
         setResendTimer(60);
-        setOtp(["", "", "", "", "", ""]);
+        setCodeExpired(false);
+        setOtp(["", "", "", ""]);
         inputRefs.current[0]?.focus();
     };
 
@@ -187,7 +212,7 @@ function OtpVerificationPage({
                             lineHeight: "1.5",
                         }}
                     >
-                        Entrez le code OTP envoyé à votre numéro
+                        Entrez le code OTP à 4 chiffres envoyé à votre numéro
                         <br />
                         <strong style={{ color: "#333" }}>
                             {phoneNumber || "+243 099 123 4567"}
@@ -198,7 +223,7 @@ function OtpVerificationPage({
                         <div
                             style={{
                                 display: "flex",
-                                gap: "10px",
+                                gap: "16px",
                                 justifyContent: "center",
                                 marginBottom: "25px",
                             }}
@@ -207,20 +232,20 @@ function OtpVerificationPage({
                                 <input
                                     key={index}
                                     ref={(el) => (inputRefs.current[index] = el)}
-                                    type="text"
+                                    type="password"
                                     inputMode="numeric"
                                     maxLength={1}
                                     value={digit}
                                     onChange={(e) => handleOtpChange(index, e.target.value)}
                                     onKeyDown={(e) => handleKeyDown(index, e)}
                                     style={{
-                                        width: "50px",
-                                        height: "55px",
-                                        fontSize: "24px",
+                                        width: "60px",
+                                        height: "60px",
+                                        fontSize: "32px",
                                         fontWeight: "600",
                                         textAlign: "center",
                                         border: "2px solid #ddd",
-                                        borderRadius: "8px",
+                                        borderRadius: "12px",
                                         outline: "none",
                                         transition: "border-color 0.2s",
                                     }}
@@ -279,7 +304,7 @@ function OtpVerificationPage({
                                         color: resendTimer > 0 ? "#999" : "#e40000",
                                         cursor: resendTimer > 0 ? "not-allowed" : "pointer",
                                         fontSize: "14px",
-                                        textDecoration: resendTimer > 0 ? "none" : "underline",
+                                        textDecoration: "underline",
                                     }}
                                 >
                                     Renvoyer le code OTP {resendTimer > 0 ? `dans ${resendTimer} s` : ""}
@@ -289,13 +314,13 @@ function OtpVerificationPage({
 
                         <button
                             type="submit"
-                            disabled={loading || otp.join("").length !== 6}
+                            disabled={loading || otp.join("").length !== 4}
                             style={{
                                 ...buttonStyle,
                                 background:
-                                    loading || otp.join("").length !== 6 ? "#ccc" : "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
+                                    loading || otp.join("").length !== 4 ? "#ccc" : "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                                 cursor:
-                                    loading || otp.join("").length !== 6
+                                    loading || otp.join("").length !== 4
                                         ? "not-allowed"
                                         : "pointer",
                                 display: "flex",
