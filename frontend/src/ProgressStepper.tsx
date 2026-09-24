@@ -49,7 +49,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                                         background: isCompleted
                                             ? "linear-gradient(135deg, #4CAF50 0%, #45a049 100%)"
                                             : isCurrent
-                                                ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                                                ? "linear-gradient(135deg, #e40000 0%, #c40000 100%)"
                                                 : "#e0e0e0",
                                         display: "flex",
                                         alignItems: "center",
@@ -57,7 +57,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                                         margin: "0 auto 8px",
                                         transition: "all 0.3s",
                                         boxShadow: isCurrent
-                                            ? "0 4px 12px rgba(102, 126, 234, 0.3)"
+                                            ? "0 4px 12px rgba(228, 0, 0, 0.3)"
                                             : "none",
                                     }}
                                 >
@@ -79,7 +79,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                                     style={{
                                         fontSize: "12px",
                                         fontWeight: isCurrent ? "700" : "500",
-                                        color: isCurrent ? "#667eea" : isCompleted ? "#4CAF50" : "#999",
+                                        color: isCurrent ? "#e40000" : isCompleted ? "#4CAF50" : "#999",
                                         whiteSpace: "nowrap",
                                     }}
                                 >
@@ -145,7 +145,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                                     background: isCompleted
                                         ? "#4CAF50"
                                         : isCurrent
-                                            ? "linear-gradient(90deg, #667eea 0%, #764ba2 100%)"
+                                            ? "linear-gradient(90deg, #e40000 0%, #c40000 100%)"
                                             : "#e0e0e0",
                                     transition: "all 0.3s",
                                 }}
@@ -158,7 +158,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                         textAlign: "center",
                         fontSize: "14px",
                         fontWeight: "600",
-                        color: "#667eea",
+                        color: "#e40000",
                     }}
                 >
                     Step {currentIndex + 1} of {steps.length}: {steps[currentIndex].label}

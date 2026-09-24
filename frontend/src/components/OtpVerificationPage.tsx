@@ -169,7 +169,7 @@ function OtpVerificationPage({
                 >
                     <ArrowLeft size={20} />
                 </button>
-                <img src="/Airtel Congo.png" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
                 <button style={menuButtonStyle}>☰</button>
             </div>
 

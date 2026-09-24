@@ -81,7 +81,7 @@ export const labelStyle = {
 export const buttonStyle = {
     width: "100%",
     padding: "16px",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
     color: "white",
     border: "none",
     borderRadius: "8px",
@@ -91,7 +91,7 @@ export const buttonStyle = {
     textTransform: "uppercase" as const,
     letterSpacing: "0.5px",
     transition: "transform 0.2s, box-shadow 0.2s",
-    boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
+    boxShadow: "0 4px 12px rgba(228, 0, 0, 0.35)",
 };
 
 export const errorStyle = {

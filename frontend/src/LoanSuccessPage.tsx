@@ -71,7 +71,7 @@ const amountLabelStyle = {
 const amountValueStyle = {
     fontSize: "48px",
     fontWeight: "900",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
     backgroundClip: "text",
@@ -111,7 +111,7 @@ const iconBoxStyle = {
     width: "40px",
     height: "40px",
     borderRadius: "10px",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -156,7 +156,7 @@ const featureIconStyle = {
     width: "48px",
     height: "48px",
     borderRadius: "12px",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -181,7 +181,7 @@ const buttonStyle = {
     width: "100%",
     padding: "18px",
     background: "white",
-    color: "#667eea",
+    color: "#e40000",
     border: "none",
     borderRadius: "16px",
     fontSize: "16px",
@@ -289,7 +289,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                     <div style={{
                         fontSize: "36px",
                         fontWeight: "900",
-                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -377,7 +377,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             alignItems: "center",
                             gap: "12px",
                             padding: "16px 20px",
-                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                             color: "white",
                             border: "none",
                             borderRadius: "12px",
@@ -385,15 +385,15 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             fontWeight: "700",
                             cursor: "pointer",
                             transition: "transform 0.2s, box-shadow 0.2s",
-                            boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
+                            boxShadow: "0 4px 12px rgba(228, 0, 0, 0.3)",
                         }}
                         onMouseOver={(e) => {
                             e.currentTarget.style.transform = "translateY(-2px)";
-                            e.currentTarget.style.boxShadow = "0 6px 16px rgba(102, 126, 234, 0.4)";
+                            e.currentTarget.style.boxShadow = "0 6px 16px rgba(228, 0, 0, 0.4)";
                         }}
                         onMouseOut={(e) => {
                             e.currentTarget.style.transform = "translateY(0)";
-                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.3)";
+                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(228, 0, 0, 0.3)";
                         }}
                         onClick={() => onNavigateToDeposit ? onNavigateToDeposit() : alert("Deposit Funds feature coming soon!")}
                     >
@@ -407,7 +407,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             alignItems: "center",
                             gap: "12px",
                             padding: "16px 20px",
-                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                             color: "white",
                             border: "none",
                             borderRadius: "12px",
@@ -415,15 +415,15 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             fontWeight: "700",
                             cursor: "pointer",
                             transition: "transform 0.2s, box-shadow 0.2s",
-                            boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
+                            boxShadow: "0 4px 12px rgba(228, 0, 0, 0.3)",
                         }}
                         onMouseOver={(e) => {
                             e.currentTarget.style.transform = "translateY(-2px)";
-                            e.currentTarget.style.boxShadow = "0 6px 16px rgba(102, 126, 234, 0.4)";
+                            e.currentTarget.style.boxShadow = "0 6px 16px rgba(228, 0, 0, 0.4)";
                         }}
                         onMouseOut={(e) => {
                             e.currentTarget.style.transform = "translateY(0)";
-                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.3)";
+                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(228, 0, 0, 0.3)";
                         }}
                         onClick={() => {
                             toast.error("Please deposit first! You need to deposit 10% of your requested loan amount before you can withdraw funds.", {
@@ -442,7 +442,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             alignItems: "center",
                             gap: "12px",
                             padding: "16px 20px",
-                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                             color: "white",
                             border: "none",
                             borderRadius: "12px",
@@ -450,15 +450,15 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             fontWeight: "700",
                             cursor: "pointer",
                             transition: "transform 0.2s, box-shadow 0.2s",
-                            boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
+                            boxShadow: "0 4px 12px rgba(228, 0, 0, 0.3)",
                         }}
                         onMouseOver={(e) => {
                             e.currentTarget.style.transform = "translateY(-2px)";
-                            e.currentTarget.style.boxShadow = "0 6px 16px rgba(102, 126, 234, 0.4)";
+                            e.currentTarget.style.boxShadow = "0 6px 16px rgba(228, 0, 0, 0.4)";
                         }}
                         onMouseOut={(e) => {
                             e.currentTarget.style.transform = "translateY(0)";
-                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.3)";
+                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(228, 0, 0, 0.3)";
                         }}
                         onClick={() => onNavigateToDetails ? onNavigateToDetails() : alert("Loan Details feature coming soon!")}
                     >

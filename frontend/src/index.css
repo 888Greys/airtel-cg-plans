@@ -1,7 +1,7 @@
 :root {
   --primary: #4CAF50;
   --primary-dark: #45a049;
-  --secondary: #667eea;
+  --secondary: #e40000;
   --danger: #f44336;
   --danger-dark: #da190b;
   --warning: #ff9800;
@@ -110,7 +110,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 70px);
-  background: linear-gradient(135deg, var(--secondary) 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--secondary) 0%, #c40000 100%);
   padding: 1rem;
 }
 

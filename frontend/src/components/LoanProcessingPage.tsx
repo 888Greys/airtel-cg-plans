@@ -51,7 +51,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
         <div style={pageStyle}>
             <div style={headerStyle}>
                 <div style={{ width: "60px" }} />
-                <img src="/Airtel Congo.png" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
                 <div style={{ width: "60px" }} />
             </div>
 
@@ -69,12 +69,12 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                             width: "120px",
                             height: "120px",
                             borderRadius: "50%",
-                            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                            background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             margin: "0 auto 32px",
-                            boxShadow: "0 8px 32px rgba(102, 126, 234, 0.3)",
+                            boxShadow: "0 8px 32px rgba(228, 0, 0, 0.3)",
                             position: "relative",
                             animation: "pulse 2s ease-in-out infinite",
                         }}
@@ -87,7 +87,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                             fontSize: "28px",
                             fontWeight: "700",
                             marginBottom: "16px",
-                            color: "#667eea",
+                            color: "#e40000",
                         }}
                     >
                         Processing Your Loan
@@ -120,7 +120,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                             style={{
                                 width: `${progress}%`,
                                 height: "100%",
-                                background: "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
+                                background: "linear-gradient(90deg, #e40000 0%, #c40000 100%)",
                                 borderRadius: "4px",
                                 transition: "width 0.3s ease",
                             }}
@@ -149,7 +149,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                     >
                         <p
                             style={{
-                                color: "#667eea",
+                                color: "#e40000",
                                 fontSize: "14px",
                                 fontWeight: "600",
                                 margin: 0,
@@ -167,11 +167,11 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
         @keyframes pulse {
           0%, 100% {
             transform: scale(1);
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 32px rgba(228, 0, 0, 0.3);
           }
           50% {
             transform: scale(1.05);
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 12px 40px rgba(228, 0, 0, 0.5);
           }
         }
       `}</style>

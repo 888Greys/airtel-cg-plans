@@ -96,7 +96,7 @@ const tipBoxStyle = {
 const buttonStyle = {
     width: "100%",
     padding: "18px",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
     color: "white",
     border: "none",
     borderRadius: "12px",
@@ -105,7 +105,7 @@ const buttonStyle = {
     cursor: "pointer",
     marginTop: "24px",
     transition: "transform 0.2s, box-shadow 0.2s",
-    boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
+    boxShadow: "0 4px 12px rgba(228, 0, 0, 0.3)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -172,7 +172,7 @@ export default function LoanDetailsPage({
                     <div style={{
                         fontSize: "28px",
                         fontWeight: "900",
-                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                         WebkitBackgroundClip: "text",
                         WebkitTextFillColor: "transparent",
                         backgroundClip: "text",
@@ -231,11 +231,11 @@ export default function LoanDetailsPage({
                     style={buttonStyle}
                     onMouseOver={(e) => {
                         e.currentTarget.style.transform = "translateY(-2px)";
-                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(102, 126, 234, 0.4)";
+                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(228, 0, 0, 0.4)";
                     }}
                     onMouseOut={(e) => {
                         e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.3)";
+                        e.currentTarget.style.boxShadow = "0 4px 12px rgba(228, 0, 0, 0.3)";
                     }}
                 >
                     <ArrowLeft size={20} />

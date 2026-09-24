@@ -178,23 +178,23 @@ class ErrorBoundary extends Component<Props, State> {
                                 onClick={this.handleReset}
                                 style={{
                                     padding: "14px 28px",
-                                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                    background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                                     color: "white",
                                     border: "none",
                                     borderRadius: "8px",
                                     fontSize: "16px",
                                     fontWeight: "600",
                                     cursor: "pointer",
-                                    boxShadow: "0 4px 12px rgba(102, 126, 234, 0.3)",
+                                    boxShadow: "0 4px 12px rgba(228, 0, 0, 0.3)",
                                     transition: "all 0.2s",
                                 }}
                                 onMouseOver={(e) => {
                                     e.currentTarget.style.transform = "translateY(-2px)";
-                                    e.currentTarget.style.boxShadow = "0 6px 16px rgba(102, 126, 234, 0.4)";
+                                    e.currentTarget.style.boxShadow = "0 6px 16px rgba(228, 0, 0, 0.4)";
                                 }}
                                 onMouseOut={(e) => {
                                     e.currentTarget.style.transform = "translateY(0)";
-                                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.3)";
+                                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(228, 0, 0, 0.3)";
                                 }}
                             >
                                 Try Again
@@ -205,8 +205,8 @@ class ErrorBoundary extends Component<Props, State> {
                                 style={{
                                     padding: "14px 28px",
                                     background: "white",
-                                    color: "#667eea",
-                                    border: "2px solid #667eea",
+                                    color: "#e40000",
+                                    border: "2px solid #e40000",
                                     borderRadius: "8px",
                                     fontSize: "16px",
                                     fontWeight: "600",

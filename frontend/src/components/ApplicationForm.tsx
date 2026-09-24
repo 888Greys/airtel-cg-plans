@@ -196,7 +196,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                 >
                     <ArrowLeft size={20} /> Back
                 </button>
-                <img src="/Airtel Congo.png" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -248,7 +248,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                     borderRadius: "3px",
                                     background:
                                         currentStep >= step
-                                            ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                                            ? "linear-gradient(135deg, #e40000 0%, #c40000 100%)"
                                             : "#e0e0e0",
                                     transition: "all 0.3s",
                                 }}
@@ -290,7 +290,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                                 : "2px solid #e0e0e0",
                                         }}
                                         onFocus={(e) => {
-                                            if (!errors.amount) e.currentTarget.style.borderColor = "#667eea";
+                                            if (!errors.amount) e.currentTarget.style.borderColor = "#e40000";
                                         }}
                                         onBlur={(e) => {
                                             if (!errors.amount) e.currentTarget.style.borderColor = "#e0e0e0";
