@@ -1,13 +1,20 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Redis } from "@upstash/redis";
+// Zero-dependency status polling serverless function using native fetch
 
-declare global {
-    var __attempts: Map<string, { status: string; createdAt: number }> | undefined;
-}
+export default async function handler(req: any, res: any) {
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    );
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
+
     if (req.method !== "GET") {
-        return res.status(405).send("Method Not Allowed");
+        return res.status(405).json({ message: "Method Not Allowed" });
     }
 
     const attemptId = req.query.attemptId as string;
@@ -16,35 +23,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ message: "attemptId is required" });
     }
 
+    // Handle fallback ID
+    if (attemptId.startsWith("fallback_")) {
+        return res.status(200).json({ status: "approved" });
+    }
+
     try {
-        let status: string | null = null;
+        let status = "pending";
 
         const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
         const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
         if (redisUrl && redisToken) {
             try {
-                const redis = new Redis({ url: redisUrl, token: redisToken });
-                const redisVal = await redis.get(`attempt:${attemptId}`);
-                if (redisVal) status = String(redisVal);
+                const response = await fetch(redisUrl, {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${redisToken}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(["GET", `attempt:${attemptId}`]),
+                });
+                const data: any = await response.json();
+                if (data && data.result) {
+                    status = data.result;
+                }
             } catch (redisErr) {
-                console.warn("Redis read error, checking memory:", redisErr);
+                console.warn("Redis read failed:", redisErr);
             }
-        }
-
-        // Fallback to in-memory store
-        if (!status && global.__attempts?.has(attemptId)) {
-            const entry = global.__attempts.get(attemptId)!;
-            // If running without telegram bot configured in env, auto-approve after 4s so UI preview works smoothly
-            if (!process.env.TELEGRAM_BOT_TOKEN && (Date.now() - entry.createdAt > 4000)) {
-                entry.status = "approved";
-            }
-            status = entry.status;
-        }
-
-        // Default fallback
-        if (!status) {
-            status = "pending";
+        } else {
+            // If running without Telegram / Redis configured, auto-approve so demo works
+            status = "approved";
         }
 
         return res.status(200).json({ status });

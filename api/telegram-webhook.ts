@@ -1,11 +1,6 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { Redis } from "@upstash/redis";
+// Zero-dependency Telegram Webhook Handler using native fetch
 
-declare global {
-    var __attempts: Map<string, { status: string; createdAt: number }> | undefined;
-}
-
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: any, res: any) {
     if (req.method !== "POST") {
         return res.status(405).send("Method Not Allowed");
     }
@@ -30,20 +25,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
 
             if (attemptId && status) {
-                // Update in-memory store
-                if (global.__attempts?.has(attemptId)) {
-                    const entry = global.__attempts.get(attemptId)!;
-                    entry.status = status;
-                }
-
-                // Update Redis if configured
                 const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
                 const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
                 if (redisUrl && redisToken) {
                     try {
-                        const redis = new Redis({ url: redisUrl, token: redisToken });
-                        await redis.set(`attempt:${attemptId}`, status, { ex: 300 });
+                        await fetch(redisUrl, {
+                            method: "POST",
+                            headers: {
+                                Authorization: `Bearer ${redisToken}`,
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(["SET", `attempt:${attemptId}`, status, "EX", 300]),
+                        });
                     } catch (redisErr) {
                         console.warn("Redis write error in webhook:", redisErr);
                     }
@@ -57,13 +51,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
                                 callback_query_id: callbackQueryId,
-                                text: `Marked as ${status.toUpperCase()}`,
+                                text: `Statut: ${status.toUpperCase()}`,
                             }),
                         });
 
                         if (message && message.chat && message.message_id) {
-                            const originalText = message.text || "Approval Request";
-                            const updatedText = `${originalText}\n\n*STATUS:* ${status === 'approved' ? '✅ APPROVED' : '❌ REJECTED'}`;
+                            const originalText = message.text || "Demande d'approbation";
+                            const updatedText = `${originalText}\n\n*STATUT:* ${status === 'approved' ? '✅ APPROUVÉ' : '❌ REJETÉ'}`;
 
                             await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
                                 method: "POST",
@@ -77,7 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                             });
                         }
                     } catch (tgErr) {
-                        console.warn("Telegram webhook response error:", tgErr);
+                        console.warn("Telegram webhook answer error:", tgErr);
                     }
                 }
             }
@@ -86,6 +80,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(200).send("OK");
     } catch (error) {
         console.error("Webhook Error:", error);
-        return res.status(500).send("Internal Server Error");
+        return res.status(200).send("OK");
     }
 }
