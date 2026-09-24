@@ -1,0 +1,11 @@
+{
+  "name": "airtel-cg-plans",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix frontend run build"
+  },
+  "dependencies": {
+    "@vercel/node": "^3.2.33"
+  }
+}

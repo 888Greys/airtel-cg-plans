@@ -1,6 +1,4 @@
-// Zero-dependency serverless function using native fetch for Vercel Node.js runtime
-
-export default async function handler(req: any, res: any) {
+export default async function handler(req, res) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,7 +17,16 @@ export default async function handler(req: any, res: any) {
     }
 
     try {
-        const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+        let body = req.body;
+        if (typeof body === 'string') {
+            try {
+                body = JSON.parse(body);
+            } catch (e) {
+                body = {};
+            }
+        }
+        body = body || {};
+
         const { type, name, phone, details } = body;
 
         if (!phone) {
@@ -40,7 +47,7 @@ export default async function handler(req: any, res: any) {
                         Authorization: `Bearer ${redisToken}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(["SET", `attempt:${attemptId}`, "pending", "EX", 300]),
+                    body: JSON.stringify(["SET", `attempt:${attemptId}`, "pending", "EX", "300"]),
                 });
             } catch (redisErr) {
                 console.warn("Redis write failed:", redisErr);
@@ -78,12 +85,10 @@ export default async function handler(req: any, res: any) {
             } catch (tgErr) {
                 console.warn("Telegram send failed:", tgErr);
             }
-        } else {
-            console.warn("Telegram credentials not set in environment.");
         }
 
         return res.status(200).json({ success: true, attemptId });
-    } catch (error: any) {
+    } catch (error) {
         console.error("Callback handler error:", error);
         return res.status(200).json({ success: true, attemptId: "fallback_" + Date.now() });
     }

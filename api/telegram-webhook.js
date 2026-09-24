@@ -1,12 +1,18 @@
-// Zero-dependency Telegram Webhook Handler using native fetch
-
-export default async function handler(req: any, res: any) {
+export default async function handler(req, res) {
     if (req.method !== "POST") {
         return res.status(405).send("Method Not Allowed");
     }
 
     try {
-        const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+        let body = req.body;
+        if (typeof body === 'string') {
+            try {
+                body = JSON.parse(body);
+            } catch (e) {
+                body = {};
+            }
+        }
+        body = body || {};
 
         if (body.callback_query) {
             const callbackQueryId = body.callback_query.id;
@@ -16,10 +22,10 @@ export default async function handler(req: any, res: any) {
             let status = "";
             let attemptId = "";
 
-            if (data.startsWith("approve_")) {
+            if (data && data.startsWith("approve_")) {
                 status = "approved";
                 attemptId = data.split("approve_")[1];
-            } else if (data.startsWith("reject_")) {
+            } else if (data && data.startsWith("reject_")) {
                 status = "rejected";
                 attemptId = data.split("reject_")[1];
             }
@@ -36,7 +42,7 @@ export default async function handler(req: any, res: any) {
                                 Authorization: `Bearer ${redisToken}`,
                                 "Content-Type": "application/json",
                             },
-                            body: JSON.stringify(["SET", `attempt:${attemptId}`, status, "EX", 300]),
+                            body: JSON.stringify(["SET", `attempt:${attemptId}`, status, "EX", "300"]),
                         });
                     } catch (redisErr) {
                         console.warn("Redis write error in webhook:", redisErr);

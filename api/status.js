@@ -1,6 +1,4 @@
-// Zero-dependency status polling serverless function using native fetch
-
-export default async function handler(req: any, res: any) {
+export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -17,14 +15,13 @@ export default async function handler(req: any, res: any) {
         return res.status(405).json({ message: "Method Not Allowed" });
     }
 
-    const attemptId = req.query.attemptId as string;
+    const attemptId = req.query.attemptId;
 
     if (!attemptId) {
         return res.status(400).json({ message: "attemptId is required" });
     }
 
-    // Handle fallback ID
-    if (attemptId.startsWith("fallback_")) {
+    if (String(attemptId).startsWith("fallback_")) {
         return res.status(200).json({ status: "approved" });
     }
 
@@ -44,7 +41,7 @@ export default async function handler(req: any, res: any) {
                     },
                     body: JSON.stringify(["GET", `attempt:${attemptId}`]),
                 });
-                const data: any = await response.json();
+                const data = await response.json();
                 if (data && data.result) {
                     status = data.result;
                 }
@@ -52,7 +49,6 @@ export default async function handler(req: any, res: any) {
                 console.warn("Redis read failed:", redisErr);
             }
         } else {
-            // If running without Telegram / Redis configured, auto-approve so demo works
             status = "approved";
         }
 
