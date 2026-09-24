@@ -151,7 +151,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 10000}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          Airtel CongoAccount={applicationData?.phone || "0745567765"}
+          AirtelCongoAccount={applicationData?.phone || "0745567765"}
         />
       )}
 
@@ -160,7 +160,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 109}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          Airtel CongoAccount={applicationData?.phone || "0734765678"}
+          AirtelCongoAccount={applicationData?.phone || "0734765678"}
         />
       )}
 
@@ -169,7 +169,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 109}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          Airtel CongoAccount={applicationData?.phone || "0734765678"}
+          AirtelCongoAccount={applicationData?.phone || "0734765678"}
         />
       )}
     </div>

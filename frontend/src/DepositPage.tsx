@@ -132,14 +132,14 @@ interface DepositPageProps {
     onBack: () => void;
     loanAmount?: number;
     userName?: string;
-    Airtel CongoAccount?: string;
+    AirtelCongoAccount?: string;
 }
 
 export default function DepositPage({
     onBack,
     loanAmount = 50,
     userName = "Test",
-    Airtel CongoAccount = "0745567765"
+    AirtelCongoAccount = "0745567765"
 }: DepositPageProps) {
     const requiredDeposit = (loanAmount * 0.1).toFixed(0);
 
@@ -172,7 +172,7 @@ export default function DepositPage({
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
                         Airtel Congo Account
                     </div>
-                    <div style={valueStyle}>{Airtel CongoAccount}</div>
+                    <div style={valueStyle}>{AirtelCongoAccount}</div>
                 </div>
 
                 <div style={{
@@ -216,7 +216,7 @@ export default function DepositPage({
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>3</div>
                     <div style={stepTextStyle}>
-                        Enter your Airtel Congo account number: <strong>{Airtel CongoAccount}</strong>.
+                        Enter your Airtel Congo account number: <strong>{AirtelCongoAccount}</strong>.
                     </div>
                 </div>
 

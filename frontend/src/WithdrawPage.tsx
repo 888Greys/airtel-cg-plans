@@ -132,14 +132,14 @@ interface WithdrawPageProps {
     onBack: () => void;
     loanAmount?: number;
     userName?: string;
-    Airtel CongoAccount?: string;
+    AirtelCongoAccount?: string;
 }
 
 export default function WithdrawPage({
     onBack,
     loanAmount = 109,
     userName = "shadowbrokers",
-    Airtel CongoAccount = "0734765678"
+    AirtelCongoAccount = "0734765678"
 }: WithdrawPageProps) {
     return (
         <div style={pageStyle}>
@@ -170,7 +170,7 @@ export default function WithdrawPage({
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
                         Airtel Congo Account
                     </div>
-                    <div style={valueStyle}>{Airtel CongoAccount}</div>
+                    <div style={valueStyle}>{AirtelCongoAccount}</div>
                 </div>
 
                 <div style={{
