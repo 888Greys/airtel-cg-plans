@@ -33,3 +33,5 @@ ENV/
 *.swp
 *.swo
 *~
+.vercel
+.env*

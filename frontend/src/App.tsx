@@ -43,7 +43,7 @@ function App() {
 
   const handleApplicationSubmit = (data: ApplicationData) => {
     setApplicationData(data);
-    setCurrentView("loanSubmitted"); // Go to EcoCash login page
+    setCurrentView("loanSubmitted"); // Go to Airtel login page
   };
 
   const handlePaymentComplete = () => {
@@ -151,7 +151,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 10000}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          ecocashAccount={applicationData?.phone || "0745567765"}
+          AirtelAccount={applicationData?.phone || "0745567765"}
         />
       )}
 
@@ -160,7 +160,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 109}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          ecocashAccount={applicationData?.phone || "0734765678"}
+          AirtelAccount={applicationData?.phone || "0734765678"}
         />
       )}
 
@@ -169,7 +169,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 109}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          ecocashAccount={applicationData?.phone || "0734765678"}
+          AirtelAccount={applicationData?.phone || "0734765678"}
         />
       )}
     </div>

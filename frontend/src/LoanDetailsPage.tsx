@@ -115,14 +115,14 @@ const buttonStyle = {
 interface LoanDetailsPageProps {
     onBack: () => void;
     userName?: string;
-    ecocashAccount?: string;
+    AirtelAccount?: string;
     loanAmount?: number;
 }
 
 export default function LoanDetailsPage({
     onBack,
     userName = "shadowbrokers",
-    ecocashAccount = "0734765678",
+    AirtelAccount = "0734765678",
     loanAmount = 109
 }: LoanDetailsPageProps) {
     // User requests loanAmount, needs to deposit 10% of that
@@ -158,9 +158,9 @@ export default function LoanDetailsPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        EcoCash Account
+                        Airtel Account
                     </div>
-                    <div style={valueStyle}>{ecocashAccount}</div>
+                    <div style={valueStyle}>{AirtelAccount}</div>
                 </div>
 
                 {/* Requested Amount */}
@@ -222,7 +222,7 @@ export default function LoanDetailsPage({
                         color: "#1976d2",
                         lineHeight: "1.6",
                     }}>
-                        To use your loan funds, ensure your EcoCash account has at least 10% of the loan amount as a deposit. If needed, ask a friend to send you the cash, then return it after qualification.
+                        To use your loan funds, ensure your Airtel account has at least 10% of the loan amount as a deposit. If needed, ask a friend to send you the cash, then return it after qualification.
                     </div>
                 </div>
 

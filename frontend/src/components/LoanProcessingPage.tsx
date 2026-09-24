@@ -51,7 +51,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
         <div style={pageStyle}>
             <div style={headerStyle}>
                 <div style={{ width: "60px" }} />
-                <img src="/ecocash.png" alt="EcoCash" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel" style={logoStyle} />
                 <div style={{ width: "60px" }} />
             </div>
 
@@ -161,7 +161,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Kashagi Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Zimbabwe</div>
 
             <style>{`
         @keyframes pulse {

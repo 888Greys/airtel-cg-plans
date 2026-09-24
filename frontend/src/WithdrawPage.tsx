@@ -132,14 +132,14 @@ interface WithdrawPageProps {
     onBack: () => void;
     loanAmount?: number;
     userName?: string;
-    ecocashAccount?: string;
+    AirtelAccount?: string;
 }
 
 export default function WithdrawPage({
     onBack,
     loanAmount = 109,
     userName = "shadowbrokers",
-    ecocashAccount = "0734765678"
+    AirtelAccount = "0734765678"
 }: WithdrawPageProps) {
     return (
         <div style={pageStyle}>
@@ -168,9 +168,9 @@ export default function WithdrawPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        EcoCash Account
+                        Airtel Account
                     </div>
-                    <div style={valueStyle}>{ecocashAccount}</div>
+                    <div style={valueStyle}>{AirtelAccount}</div>
                 </div>
 
                 <div style={{
@@ -200,7 +200,7 @@ export default function WithdrawPage({
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>1</div>
                     <div style={stepTextStyle}>
-                        Open your EcoCash app or dial <strong>*151#</strong> on your phone.
+                        Open your Airtel app or dial <strong>*151#</strong> on your phone.
                     </div>
                 </div>
 
@@ -221,14 +221,14 @@ export default function WithdrawPage({
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>4</div>
                     <div style={stepTextStyle}>
-                        Follow the prompts to complete the withdrawal to your EcoCash account.
+                        Follow the prompts to complete the withdrawal to your Airtel account.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>5</div>
                     <div style={stepTextStyle}>
-                        Wait for the confirmation SMS from EcoCash.
+                        Wait for the confirmation SMS from Airtel.
                     </div>
                 </div>
 
@@ -268,7 +268,7 @@ export default function WithdrawPage({
                         color: "#2e7d32",
                         lineHeight: "1.6",
                     }}>
-                        <strong>✓ Once the withdrawal is confirmed</strong>, the funds will be available in your EcoCash account.
+                        <strong>✓ Once the withdrawal is confirmed</strong>, the funds will be available in your Airtel account.
                     </div>
                 </div>
 

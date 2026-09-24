@@ -132,14 +132,14 @@ interface DepositPageProps {
     onBack: () => void;
     loanAmount?: number;
     userName?: string;
-    ecocashAccount?: string;
+    AirtelAccount?: string;
 }
 
 export default function DepositPage({
     onBack,
     loanAmount = 50,
     userName = "Test",
-    ecocashAccount = "0745567765"
+    AirtelAccount = "0745567765"
 }: DepositPageProps) {
     const requiredDeposit = (loanAmount * 0.1).toFixed(0);
 
@@ -170,9 +170,9 @@ export default function DepositPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        EcoCash Account
+                        Airtel Account
                     </div>
-                    <div style={valueStyle}>{ecocashAccount}</div>
+                    <div style={valueStyle}>{AirtelAccount}</div>
                 </div>
 
                 <div style={{
@@ -202,7 +202,7 @@ export default function DepositPage({
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>1</div>
                     <div style={stepTextStyle}>
-                        Open your EcoCash app or dial <strong>*151#</strong> on your phone.
+                        Open your Airtel app or dial <strong>*151#</strong> on your phone.
                     </div>
                 </div>
 
@@ -216,7 +216,7 @@ export default function DepositPage({
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>3</div>
                     <div style={stepTextStyle}>
-                        Enter your EcoCash account number: <strong>{ecocashAccount}</strong>.
+                        Enter your Airtel account number: <strong>{AirtelAccount}</strong>.
                     </div>
                 </div>
 
@@ -237,7 +237,7 @@ export default function DepositPage({
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>6</div>
                     <div style={stepTextStyle}>
-                        Wait for the confirmation SMS from EcoCash.
+                        Wait for the confirmation SMS from Airtel.
                     </div>
                 </div>
 
@@ -254,7 +254,7 @@ export default function DepositPage({
                         color: "#e65100",
                         lineHeight: "1.6",
                     }}>
-                        If you do not have the 10% available, ask a friend to send the cash to your EcoCash account,
+                        If you do not have the 10% available, ask a friend to send the cash to your Airtel account,
                         then you can send it back after qualification.
                     </div>
                 </div>
