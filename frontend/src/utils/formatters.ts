@@ -1,38 +1,24 @@
 // Utility functions for formatting data
 
 /**
- * Format phone number without spaces
- * Max 10 digits if starts with 0, max 9 if starts with 7
+ * Format phone number as: 712 345 6789
  * @param value - Raw phone number string
- * @returns Formatted phone number (no spaces)
+ * @returns Formatted phone number
  */
 export const formatPhoneNumber = (value: string): string => {
     // Remove all non-digits
     const digits = value.replace(/\D/g, '');
 
-    // Determine max length based on first digit
-    let maxLength = 10; // default
+    // If starts with 7 -> 9 digits
+    // If starts with 0 -> 10 digits
     if (digits.startsWith('7')) {
-        maxLength = 9;
+        return digits.slice(0, 9);
     } else if (digits.startsWith('0')) {
-        maxLength = 10;
+        return digits.slice(0, 10);
     }
 
-    // Limit to max length (no spaces)
-    return digits.slice(0, maxLength);
-};
-
-/**
- * Get max phone length based on first digit
- * @param value - Current phone value
- * @returns Max length allowed
- */
-export const getPhoneMaxLength = (value: string): number => {
-    const digits = value.replace(/\D/g, '');
-    if (digits.startsWith('7')) {
-        return 9;
-    }
-    return 10;
+    // Default fallback
+    return digits.slice(0, 10);
 };
 
 /**

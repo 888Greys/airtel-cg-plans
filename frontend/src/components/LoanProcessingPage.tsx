@@ -51,7 +51,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
         <div style={pageStyle}>
             <div style={headerStyle}>
                 <div style={{ width: "60px" }} />
-                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/Airtel Congo.png" alt="Airtel Congo" style={logoStyle} />
                 <div style={{ width: "60px" }} />
             </div>
 
@@ -161,7 +161,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Congo Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Congo</div>
 
             <style>{`
         @keyframes pulse {

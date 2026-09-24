@@ -1,79 +1,52 @@
-type ApiRequest = {
-    method?: string;
-    body?: unknown;
-};
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { Redis } from "@upstash/redis";
 
-type ApiResponse = {
-    status: (code: number) => ApiResponse;
-    json: (body: unknown) => void;
-    send: (body: string) => void;
-};
-
-const redisCommand = async (command: string) => {
-    const url = process.env.UPSTASH_REDIS_REST_URL?.replace(/\/+$/, "");
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-    if (!url || !token) {
-        throw new Error("UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are not configured");
-    }
-
-    const response = await fetch(`${url}${command}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    const payload = await response.json();
-
-    if (payload.error) {
-        throw new Error(`Upstash error: ${payload.error}`);
-    }
-
-    return payload.result;
-};
-
-export default async function handler(req: ApiRequest, res: ApiResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== "POST") {
         return res.status(405).send("Method Not Allowed");
     }
 
     try {
-        const body = (typeof req.body === "string" ? JSON.parse(req.body) : req.body || {}) as {
-            callback_query?: {
-                id?: string;
-                data?: string;
-                message?: {
-                    text?: string;
-                    message_id?: number;
-                    chat?: { id?: number };
-                };
-            };
-        };
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
 
-        const callbackQuery = body.callback_query;
+        if (body.callback_query) {
+            const callbackQueryId = body.callback_query.id;
+            const data = body.callback_query.data;
+            const message = body.callback_query.message;
 
-        if (callbackQuery?.data) {
-            const isApprove = callbackQuery.data.startsWith("approve_");
-            const isReject = callbackQuery.data.startsWith("reject_");
-            const status = isApprove ? "approved" : isReject ? "rejected" : "";
-            const attemptId = callbackQuery.data.replace(/^(approve_|reject_)/, "");
+            let status = "";
+            let attemptId = "";
 
-            if (status && attemptId) {
-                await redisCommand(`/set/attempt:${attemptId}/${status}/EX/300`);
+            if (data.startsWith("approve_")) {
+                status = "approved";
+                attemptId = data.split("approve_")[1];
+            } else if (data.startsWith("reject_")) {
+                status = "rejected";
+                attemptId = data.split("reject_")[1];
+            }
+
+            if (attemptId && status) {
+                const redis = new Redis({
+                    url: process.env.UPSTASH_REDIS_REST_URL || "",
+                    token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
+                });
+
+                await redis.set(`attempt:${attemptId}`, status, { ex: 300 });
 
                 const botToken = process.env.TELEGRAM_BOT_TOKEN;
-
                 if (botToken) {
                     await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            callback_query_id: callbackQuery.id,
+                            callback_query_id: callbackQueryId,
                             text: `Marked as ${status.toUpperCase()}`,
                         }),
                     });
 
-                    const message = callbackQuery.message;
-
-                    if (message?.chat?.id && message?.message_id) {
+                    if (message && message.chat && message.message_id) {
                         const originalText = message.text || "Approval Request";
+                        const updatedText = `${originalText}\n\n*STATUS:* ${status === 'approved' ? '✅ APPROVED' : '❌ REJECTED'}`;
 
                         await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
                             method: "POST",
@@ -81,7 +54,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
                             body: JSON.stringify({
                                 chat_id: message.chat.id,
                                 message_id: message.message_id,
-                                text: `${originalText}\n\n*STATUS:* ${isApprove ? "✅ APPROVED" : "❌ REJECTED"}`,
+                                text: updatedText,
                                 parse_mode: "Markdown",
                             }),
                         });
@@ -92,7 +65,7 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
 
         return res.status(200).send("OK");
     } catch (error) {
-        console.error("Webhook error:", error);
+        console.error("Webhook Error:", error);
         return res.status(500).send("Internal Server Error");
     }
 }

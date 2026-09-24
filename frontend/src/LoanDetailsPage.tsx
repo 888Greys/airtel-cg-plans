@@ -115,14 +115,14 @@ const buttonStyle = {
 interface LoanDetailsPageProps {
     onBack: () => void;
     userName?: string;
-    AirtelCongoAccount?: string;
+    Airtel CongoAccount?: string;
     loanAmount?: number;
 }
 
 export default function LoanDetailsPage({
     onBack,
     userName = "shadowbrokers",
-    AirtelCongoAccount = "0734765678",
+    Airtel CongoAccount = "0734765678",
     loanAmount = 109
 }: LoanDetailsPageProps) {
     // User requests loanAmount, needs to deposit 10% of that
@@ -160,7 +160,7 @@ export default function LoanDetailsPage({
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
                         Airtel Congo Account
                     </div>
-                    <div style={valueStyle}>{AirtelCongoAccount}</div>
+                    <div style={valueStyle}>{Airtel CongoAccount}</div>
                 </div>
 
                 {/* Requested Amount */}

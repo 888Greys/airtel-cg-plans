@@ -13,20 +13,16 @@ export type ViewType =
     | "details";
 
 export interface ApplicationData {
+    product_id: string;
+    amount: string;
+    term_months: string;
+    purpose: string;
+    first_name: string;
+    last_name: string;
+    email: string;
     phone: string;
-    currentLimit?: number;
-    newLimit?: number;
-    increaseAmount?: number;
-    // Legacy fields for compatibility
-    product_id?: string;
-    amount?: string;
-    term_months?: string;
-    purpose?: string;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    employment_status?: string;
-    annual_income?: string;
+    employment_status: string;
+    annual_income: string;
     applicationId?: number;
 }
 
@@ -35,9 +31,9 @@ export interface LandingPageProps {
 }
 
 export interface ApplicationFormProps {
-    apiUrl?: string;
+    apiUrl: string;
     onBack: () => void;
-    onSubmitSuccess: (data: any) => void;
+    onSubmitSuccess: (data: ApplicationData) => void;
 }
 
 export interface PaymentConfirmationProps {

