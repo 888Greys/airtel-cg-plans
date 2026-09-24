@@ -198,7 +198,7 @@ function PaymentConfirmation({
                     background: "white",
                 }}
             >
-                {/* Airtel Logo */}
+                {/* Airtel Congo Logo */}
                 <div
                     style={{
                         fontSize: "56px",
@@ -411,7 +411,7 @@ function PaymentConfirmation({
                             lineHeight: "1.5",
                         }}
                     >
-                        To register an Airtel wallet or get assistance,
+                        To register an Airtel Congo wallet or get assistance,
                         <br />
                         click below
                     </p>

