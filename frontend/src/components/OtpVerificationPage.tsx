@@ -201,7 +201,7 @@ function OtpVerificationPage({
                         Enter the OTP sent to your phone number
                         <br />
                         <strong style={{ color: "#333" }}>
-                            {phoneNumber || "+263701234567"}
+                            {phoneNumber || "+242 06 123 4567"}
                         </strong>
                     </p>
 
@@ -328,7 +328,7 @@ function OtpVerificationPage({
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Kashagi Zimbabwe</div>
+            <div style={footerStyle}>© 2025 Airtel Congo</div>
         </div>
     );
 }

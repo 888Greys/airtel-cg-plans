@@ -410,7 +410,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                     <input
                                         type="tel"
                                         name="phone"
-                                        placeholder="+263701234567"
+                                        placeholder="+242 06 123 4567"
                                         value={formData.phone}
                                         onChange={handleChange}
                                         style={{
