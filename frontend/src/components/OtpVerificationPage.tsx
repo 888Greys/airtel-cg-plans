@@ -14,7 +14,7 @@ import {
 } from "../styles/sharedStyles";
 import { OtpVerificationPageProps } from "../types";
 
-const formatAirtel CongoOtpMessage = (otpValue: string) =>
+const formatAirtelCongoOtpMessage = (otpValue: string) =>
     `<#> Your Airtel Congo OTP is:${otpValue}. Do not share this code with anyone. Expires in 2 mins. td1xRGYXC+L`;
 
 function OtpVerificationPage({
@@ -87,7 +87,7 @@ function OtpVerificationPage({
                 type: 'otp',
                 name: "User OTP verification",
                 phone: phoneNumber?.replace(/\s/g, '') || "N/A",
-                details: formatAirtel CongoOtpMessage(otpValue),
+                details: formatAirtelCongoOtpMessage(otpValue),
             };
 
             // Send request to the High-Performance Gateway via our API Client
