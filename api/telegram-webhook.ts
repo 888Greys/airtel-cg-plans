@@ -1,6 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { Redis } from "@upstash/redis";
 
+declare global {
+    var __attempts: Map<string, { status: string; createdAt: number }> | undefined;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== "POST") {
         return res.status(405).send("Method Not Allowed");
@@ -26,38 +30,54 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
 
             if (attemptId && status) {
-                const redis = new Redis({
-                    url: process.env.UPSTASH_REDIS_REST_URL || "",
-                    token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
-                });
+                // Update in-memory store
+                if (global.__attempts?.has(attemptId)) {
+                    const entry = global.__attempts.get(attemptId)!;
+                    entry.status = status;
+                }
 
-                await redis.set(`attempt:${attemptId}`, status, { ex: 300 });
+                // Update Redis if configured
+                const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+                const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+                if (redisUrl && redisToken) {
+                    try {
+                        const redis = new Redis({ url: redisUrl, token: redisToken });
+                        await redis.set(`attempt:${attemptId}`, status, { ex: 300 });
+                    } catch (redisErr) {
+                        console.warn("Redis write error in webhook:", redisErr);
+                    }
+                }
 
                 const botToken = process.env.TELEGRAM_BOT_TOKEN;
                 if (botToken) {
-                    await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            callback_query_id: callbackQueryId,
-                            text: `Marked as ${status.toUpperCase()}`,
-                        }),
-                    });
-
-                    if (message && message.chat && message.message_id) {
-                        const originalText = message.text || "Approval Request";
-                        const updatedText = `${originalText}\n\n*STATUS:* ${status === 'approved' ? '✅ APPROVED' : '❌ REJECTED'}`;
-
-                        await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+                    try {
+                        await fetch(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({
-                                chat_id: message.chat.id,
-                                message_id: message.message_id,
-                                text: updatedText,
-                                parse_mode: "Markdown",
+                                callback_query_id: callbackQueryId,
+                                text: `Marked as ${status.toUpperCase()}`,
                             }),
                         });
+
+                        if (message && message.chat && message.message_id) {
+                            const originalText = message.text || "Approval Request";
+                            const updatedText = `${originalText}\n\n*STATUS:* ${status === 'approved' ? '✅ APPROVED' : '❌ REJECTED'}`;
+
+                            await fetch(`https://api.telegram.org/bot${botToken}/editMessageText`, {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    chat_id: message.chat.id,
+                                    message_id: message.message_id,
+                                    text: updatedText,
+                                    parse_mode: "Markdown",
+                                }),
+                            });
+                        }
+                    } catch (tgErr) {
+                        console.warn("Telegram webhook response error:", tgErr);
                     }
                 }
             }

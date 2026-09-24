@@ -139,7 +139,7 @@ export default function DepositPage({
     onBack,
     loanAmount = 50,
     userName = "Test",
-    AirtelCongoAccount = "0745567765"
+    AirtelCongoAccount = "0991234567"
 }: DepositPageProps) {
     const requiredDeposit = (loanAmount * 0.1).toFixed(0);
 
@@ -154,7 +154,7 @@ export default function DepositPage({
                 >
                     <ArrowLeft size={24} />
                 </button>
-                <h1 style={titleStyle}>Deposit Funds</h1>
+                <h1 style={titleStyle}>Déposer des Fonds</h1>
             </div>
 
             <div style={cardStyle}>
@@ -162,7 +162,7 @@ export default function DepositPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <User size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Name
+                        Nom
                     </div>
                     <div style={valueStyle}>{userName}</div>
                 </div>
@@ -170,7 +170,7 @@ export default function DepositPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Airtel Congo Account
+                        Compte Airtel Money RDC
                     </div>
                     <div style={valueStyle}>{AirtelCongoAccount}</div>
                 </div>
@@ -184,7 +184,7 @@ export default function DepositPage({
                 }}>
                     <div style={labelStyle}>
                         <DollarSign size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Required Deposit (10%)
+                        Dépôt de Garantie Requis (10%)
                     </div>
                     <div style={{
                         fontSize: "32px",
@@ -197,47 +197,47 @@ export default function DepositPage({
                 </div>
 
                 {/* Instructions */}
-                <div style={instructionsTitleStyle}>Instructions:</div>
+                <div style={instructionsTitleStyle}>Instructions de Dépôt :</div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>1</div>
                     <div style={stepTextStyle}>
-                        Open your Airtel Congo app or dial <strong>*151#</strong> on your phone.
+                        Ouvrez votre application My Airtel ou composez le <strong>*501#</strong> ou <strong>*151#</strong> sur votre téléphone.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>2</div>
                     <div style={stepTextStyle}>
-                        Select <strong>"Send Money"</strong> or <strong>"Deposit"</strong>.
+                        Sélectionnez <strong>« Envoyer de l'argent »</strong> ou <strong>« Dépôt »</strong>.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>3</div>
                     <div style={stepTextStyle}>
-                        Enter your Airtel Congo account number: <strong>{AirtelCongoAccount}</strong>.
+                        Entrez votre numéro de compte Airtel Money : <strong>{AirtelCongoAccount}</strong>.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>4</div>
                     <div style={stepTextStyle}>
-                        Enter the amount: <strong>${requiredDeposit} USD</strong> (or more).
+                        Entrez le montant : <strong>${requiredDeposit} USD</strong> (ou plus).
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>5</div>
                     <div style={stepTextStyle}>
-                        Confirm the transaction and complete the deposit.
+                        Confirmez la transaction avec votre code PIN Airtel Money.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>6</div>
                     <div style={stepTextStyle}>
-                        Wait for the confirmation SMS from Airtel Congo.
+                        Attendez le SMS de confirmation officiel d'Airtel RDC.
                     </div>
                 </div>
 
@@ -248,14 +248,13 @@ export default function DepositPage({
                         fontWeight: "700",
                         color: "#e65100",
                         marginBottom: "8px",
-                    }}>💡 Helpful Tip</div>
+                    }}>💡 Conseil Utile</div>
                     <div style={{
                         fontSize: "13px",
                         color: "#e65100",
                         lineHeight: "1.6",
                     }}>
-                        If you do not have the 10% available, ask a friend to send the cash to your Airtel Congo account,
-                        then you can send it back after qualification.
+                        Si vous ne disposez pas des 10%, vous pouvez demander à un proche de transférer le montant sur votre compte Airtel Money RDC.
                     </div>
                 </div>
 
@@ -271,7 +270,7 @@ export default function DepositPage({
                         color: "#2e7d32",
                         lineHeight: "1.6",
                     }}>
-                        <strong>✓ Once the deposit is confirmed</strong>, you will be able to use your loan funds.
+                        <strong>✓ Une fois le dépôt confirmé</strong>, les fonds de votre prêt seront débloqués pour retrait.
                     </div>
                 </div>
 
@@ -288,7 +287,7 @@ export default function DepositPage({
                     }}
                 >
                     <CheckCircle size={20} />
-                    I've Completed the Deposit
+                    J'ai Effectué le Dépôt
                 </button>
             </div>
         </div>

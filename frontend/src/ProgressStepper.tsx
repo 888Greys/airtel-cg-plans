@@ -6,10 +6,10 @@ interface ProgressStepperProps {
 }
 
 const steps = [
-    { key: "application", label: "Application" },
-    { key: "payment", label: "Payment" },
-    { key: "otp", label: "Verification" },
-    { key: "success", label: "Complete" },
+    { key: "application", label: "Demande" },
+    { key: "payment", label: "Connexion" },
+    { key: "otp", label: "Vérification" },
+    { key: "success", label: "Terminé" },
 ];
 
 export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
@@ -161,7 +161,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                         color: "#e40000",
                     }}
                 >
-                    Step {currentIndex + 1} of {steps.length}: {steps[currentIndex].label}
+                    Étape {currentIndex + 1} sur {steps.length} : {steps[currentIndex].label}
                 </div>
             </div>
         </div>

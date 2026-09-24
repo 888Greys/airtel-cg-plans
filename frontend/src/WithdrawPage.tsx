@@ -138,8 +138,8 @@ interface WithdrawPageProps {
 export default function WithdrawPage({
     onBack,
     loanAmount = 109,
-    userName = "shadowbrokers",
-    AirtelCongoAccount = "0734765678"
+    userName = "Client",
+    AirtelCongoAccount = "0991234567"
 }: WithdrawPageProps) {
     return (
         <div style={pageStyle}>
@@ -152,7 +152,7 @@ export default function WithdrawPage({
                 >
                     <ArrowLeft size={24} />
                 </button>
-                <h1 style={titleStyle}>Withdraw Funds</h1>
+                <h1 style={titleStyle}>Retirer des Fonds</h1>
             </div>
 
             <div style={cardStyle}>
@@ -160,7 +160,7 @@ export default function WithdrawPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <User size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Name
+                        Nom
                     </div>
                     <div style={valueStyle}>{userName}</div>
                 </div>
@@ -168,7 +168,7 @@ export default function WithdrawPage({
                 <div style={infoRowStyle}>
                     <div style={labelStyle}>
                         <Smartphone size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Airtel Congo Account
+                        Compte Airtel Money RDC
                     </div>
                     <div style={valueStyle}>{AirtelCongoAccount}</div>
                 </div>
@@ -182,7 +182,7 @@ export default function WithdrawPage({
                 }}>
                     <div style={labelStyle}>
                         <DollarSign size={14} style={{ display: "inline", marginRight: "6px" }} />
-                        Loan Amount Available
+                        Montant du Prêt Disponible
                     </div>
                     <div style={{
                         fontSize: "32px",
@@ -195,47 +195,47 @@ export default function WithdrawPage({
                 </div>
 
                 {/* Instructions */}
-                <div style={instructionsTitleStyle}>Withdrawal Instructions:</div>
+                <div style={instructionsTitleStyle}>Instructions de Retrait :</div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>1</div>
                     <div style={stepTextStyle}>
-                        Open your Airtel Congo app or dial <strong>*151#</strong> on your phone.
+                        Ouvrez l'application Airtel Money ou composez le <strong>*501#</strong> ou <strong>*151#</strong> sur votre mobile.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>2</div>
                     <div style={stepTextStyle}>
-                        Select <strong>"Withdraw Cash"</strong> or the relevant withdrawal option.
+                        Sélectionnez <strong>« Retirer de l'argent »</strong> ou l'option de transfert souhaitée.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>3</div>
                     <div style={stepTextStyle}>
-                        Enter the amount you wish to withdraw (up to <strong>${loanAmount} USD</strong>).
+                        Entrez le montant que vous souhaitez retirer (jusqu'à <strong>${loanAmount} USD</strong>).
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>4</div>
                     <div style={stepTextStyle}>
-                        Follow the prompts to complete the withdrawal to your Airtel Congo account.
+                        Suivez les instructions pour finaliser le virement vers votre compte Airtel Money RDC.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>5</div>
                     <div style={stepTextStyle}>
-                        Wait for the confirmation SMS from Airtel Congo.
+                        Attendez le SMS de confirmation officiel d'Airtel RDC.
                     </div>
                 </div>
 
                 <div style={stepStyle}>
                     <div style={stepNumberStyle}>6</div>
                     <div style={stepTextStyle}>
-                        Ensure you have met all qualification requirements before withdrawing.
+                        Assurez-vous que votre dépôt de garantie de 10% a bien été vérifié.
                     </div>
                 </div>
 
@@ -246,13 +246,13 @@ export default function WithdrawPage({
                         fontWeight: "700",
                         color: "#1976d2",
                         marginBottom: "8px",
-                    }}>ℹ️ Important Notice</div>
+                    }}>ℹ️ Avis Important</div>
                     <div style={{
                         fontSize: "13px",
                         color: "#1976d2",
                         lineHeight: "1.6",
                     }}>
-                        Ensure you have met all qualification requirements before withdrawing.
+                        Les retraits s'effectuent instantanément sur votre solde Airtel Money une fois les conditions remplies.
                     </div>
                 </div>
 
@@ -268,7 +268,7 @@ export default function WithdrawPage({
                         color: "#2e7d32",
                         lineHeight: "1.6",
                     }}>
-                        <strong>✓ Once the withdrawal is confirmed</strong>, the funds will be available in your Airtel Congo account.
+                        <strong>✓ Une fois le retrait confirmé</strong>, les fonds seront utilisables immédiatement via Airtel Money ou en agence.
                     </div>
                 </div>
 
@@ -285,7 +285,7 @@ export default function WithdrawPage({
                     }}
                 >
                     <CheckCircle size={20} />
-                    I've Completed the Withdrawal
+                    J'ai Effectué le Retrait
                 </button>
             </div>
         </div>

@@ -24,21 +24,8 @@ const congratsCardStyle = {
     animation: "slideUp 0.6s ease-out",
 };
 
-const successIconWrapperStyle = {
-    width: "120px",
-    height: "120px",
-    background: "linear-gradient(135deg, #4CAF50 0%, #45a049 100%)",
-    borderRadius: "50%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "0 auto 24px",
-    boxShadow: "0 8px 24px rgba(76, 175, 80, 0.4)",
-    animation: "pulse 2s ease-in-out infinite",
-};
-
 const titleStyle = {
-    fontSize: "32px",
+    fontSize: "30px",
     fontWeight: "900",
     color: "#1a1a1a",
     marginBottom: "16px",
@@ -47,34 +34,9 @@ const titleStyle = {
 
 const subtitleStyle = {
     color: "#666",
-    fontSize: "18px",
+    fontSize: "16px",
     lineHeight: "1.6",
     marginBottom: "32px",
-};
-
-const amountDisplayStyle = {
-    background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-    borderRadius: "16px",
-    padding: "24px",
-    marginBottom: "24px",
-};
-
-const amountLabelStyle = {
-    fontSize: "14px",
-    color: "#666",
-    fontWeight: "600",
-    marginBottom: "8px",
-    textTransform: "uppercase" as const,
-    letterSpacing: "1px",
-};
-
-const amountValueStyle = {
-    fontSize: "48px",
-    fontWeight: "900",
-    background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
 };
 
 const detailsCardStyle = {
@@ -138,45 +100,6 @@ const infoValueStyle = {
     fontWeight: "700",
 };
 
-const featuresGridStyle = {
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "16px",
-    marginTop: "24px",
-};
-
-const featureBoxStyle = {
-    background: "#f8f9fa",
-    borderRadius: "12px",
-    padding: "20px",
-    textAlign: "center" as const,
-};
-
-const featureIconStyle = {
-    width: "48px",
-    height: "48px",
-    borderRadius: "12px",
-    background: "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "0 auto 12px",
-    color: "white",
-};
-
-const featureTitleStyle = {
-    fontSize: "14px",
-    fontWeight: "700",
-    color: "#1a1a1a",
-    marginBottom: "4px",
-};
-
-const featureDescStyle = {
-    fontSize: "12px",
-    color: "#666",
-    lineHeight: "1.4",
-};
-
 const buttonStyle = {
     width: "100%",
     padding: "18px",
@@ -209,7 +132,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
         amount: 10000,
         term_months: 12,
         applicationId: "LN-2025-8832",
-        date: new Date().toLocaleDateString(),
+        date: new Date().toLocaleDateString("fr-FR"),
     };
 
     const monthlyPayment = ((data.amount * (0.08 / 12) * Math.pow(1 + 0.08 / 12, data.term_months)) /
@@ -220,20 +143,20 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
             <style>
                 {`
 @keyframes slideUp {
-            from {
+    from {
         opacity: 0;
         transform: translateY(30px);
     }
-            to {
+    to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 @keyframes pulse {
-    0 %, 100 % {
+    0%, 100% {
         transform: scale(1);
     }
-    50 % {
+    50% {
         transform: scale(1.05);
     }
 }
@@ -245,13 +168,13 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                 <div style={{
                     width: "80px",
                     height: "80px",
-                    background: "linear-gradient(135deg, #4CAF50 0%, #45a049 100%)",
+                    background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                     borderRadius: "50%",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     margin: "0 auto 16px",
-                    boxShadow: "0 8px 24px rgba(76, 175, 80, 0.4)",
+                    boxShadow: "0 8px 24px rgba(16, 185, 129, 0.4)",
                     animation: "pulse 2s ease-in-out infinite",
                 }}>
                     <CheckCircle size={48} strokeWidth={3} color="white" />
@@ -262,14 +185,14 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                     color: "#1a1a1a",
                     marginBottom: "8px",
                     letterSpacing: "-0.5px",
-                }}>🎉 Congratulations!</h1>
+                }}>🎉 Félicitations !</h1>
                 <p style={{
                     color: "#666",
                     fontSize: "15px",
                     lineHeight: "1.5",
                     marginBottom: "20px",
                 }}>
-                    Your loan has been <strong>approved</strong>! The funds will be disbursed shortly.
+                    Votre prêt a été <strong>approuvé</strong> ! Les fonds seront débloqués sur votre compte.
                 </p>
 
                 <div style={{
@@ -285,7 +208,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                         marginBottom: "4px",
                         textTransform: "uppercase" as const,
                         letterSpacing: "0.5px",
-                    }}>Approved Amount</div>
+                    }}>Montant Approuvé</div>
                     <div style={{
                         fontSize: "36px",
                         fontWeight: "900",
@@ -311,14 +234,14 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                         marginBottom: "6px",
                         textTransform: "uppercase" as const,
                         letterSpacing: "0.5px",
-                    }}>⚠️ Compliance Notice</div>
+                    }}>⚠️ Avis de Conformité</div>
                     <p style={{
                         fontSize: "12px",
                         color: "#e65100",
                         margin: 0,
                         lineHeight: "1.5",
                     }}>
-                        Your Airtel Congo account must be active and maintain a security deposit of at least <strong>10% of your requested loan amount</strong>. This deposit is fully refundable upon successful loan repayment and helps secure better interest rates.
+                        Votre compte Airtel Money RDC doit être actif et disposer d'un dépôt de garantie d'au moins <strong>10% du montant du prêt</strong>. Ce dépôt est 100% remboursable lors du remboursement du prêt.
                     </p>
                 </div>
             </div>
@@ -327,7 +250,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
             <div style={detailsCardStyle}>
                 <h3 style={sectionTitleStyle}>
                     <CreditCard size={24} />
-                    Loan Details
+                    Détails du Prêt
                 </h3>
 
                 <div style={infoRowStyle}>
@@ -335,7 +258,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                         <DollarSign size={20} />
                     </div>
                     <div style={infoTextStyle}>
-                        <div style={infoLabelStyle}>Monthly Payment</div>
+                        <div style={infoLabelStyle}>Paiement Mensuel</div>
                         <div style={infoValueStyle}>${monthlyPayment}</div>
                     </div>
                 </div>
@@ -345,8 +268,8 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                         <Calendar size={20} />
                     </div>
                     <div style={infoTextStyle}>
-                        <div style={infoLabelStyle}>Loan Term</div>
-                        <div style={infoValueStyle}>{data.term_months} Months</div>
+                        <div style={infoLabelStyle}>Durée du Prêt</div>
+                        <div style={infoValueStyle}>{data.term_months} Mois</div>
                     </div>
                 </div>
 
@@ -355,14 +278,14 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                         <TrendingUp size={20} />
                     </div>
                     <div style={infoTextStyle}>
-                        <div style={infoLabelStyle}>Interest Rate</div>
-                        <div style={infoValueStyle}>8% APR</div>
+                        <div style={infoLabelStyle}>Taux d'Intérêt</div>
+                        <div style={infoValueStyle}>8% annuel</div>
                     </div>
                 </div>
 
                 {/* Action Buttons */}
                 <h3 style={{ ...sectionTitleStyle, marginTop: "32px" }}>
-                    Quick Actions
+                    Actions Rapides
                 </h3>
 
                 <div style={{
@@ -395,10 +318,10 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             e.currentTarget.style.transform = "translateY(0)";
                             e.currentTarget.style.boxShadow = "0 4px 12px rgba(228, 0, 0, 0.3)";
                         }}
-                        onClick={() => onNavigateToDeposit ? onNavigateToDeposit() : alert("Deposit Funds feature coming soon!")}
+                        onClick={() => onNavigateToDeposit ? onNavigateToDeposit() : null}
                     >
                         <ArrowUpCircle size={24} />
-                        <span style={{ flex: 1, textAlign: "left" }}>Deposit Funds</span>
+                        <span style={{ flex: 1, textAlign: "left" }}>Déposer des Fonds</span>
                     </button>
 
                     <button
@@ -426,14 +349,14 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             e.currentTarget.style.boxShadow = "0 4px 12px rgba(228, 0, 0, 0.3)";
                         }}
                         onClick={() => {
-                            toast.error("Please deposit first! You need to deposit 10% of your requested loan amount before you can withdraw funds.", {
+                            toast.error("Veuillez d'abord effectuer le dépôt de garantie de 10% avant de pouvoir retirer les fonds.", {
                                 duration: 5000,
                                 icon: "🔒",
                             });
                         }}
                     >
                         <ArrowDownCircle size={24} />
-                        <span style={{ flex: 1, textAlign: "left" }}>Withdraw Funds</span>
+                        <span style={{ flex: 1, textAlign: "left" }}>Retirer des Fonds</span>
                     </button>
 
                     <button
@@ -460,10 +383,10 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                             e.currentTarget.style.transform = "translateY(0)";
                             e.currentTarget.style.boxShadow = "0 4px 12px rgba(228, 0, 0, 0.3)";
                         }}
-                        onClick={() => onNavigateToDetails ? onNavigateToDetails() : alert("Loan Details feature coming soon!")}
+                        onClick={() => onNavigateToDetails ? onNavigateToDetails() : null}
                     >
                         <FileText size={24} />
-                        <span style={{ flex: 1, textAlign: "left" }}>Loan Details</span>
+                        <span style={{ flex: 1, textAlign: "left" }}>Détails du Prêt</span>
                     </button>
                 </div>
 
@@ -480,7 +403,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                         margin: 0,
                         lineHeight: "1.5",
                     }}>
-                        📱 <strong>Next Steps:</strong> You will receive an SMS and email with disbursement details within 24 hours.
+                        📱 <strong>Prochaines étapes :</strong> Vous recevrez un SMS de confirmation d'Airtel Money RDC dans les prochaines minutes.
                     </p>
                 </div>
             </div>
@@ -502,7 +425,7 @@ export default function LoanSuccessPage({ onBack, applicationData, onNavigateToD
                     e.currentTarget.style.background = "transparent";
                 }}
             >
-                <Home size={20} /> Return to Home
+                <Home size={20} /> Retour à l'accueil
             </button>
         </div>
     );

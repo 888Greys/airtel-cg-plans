@@ -39,7 +39,6 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
-        // Format if it's the phone field
         const processedValue = name === "phone" ? formatPhoneNumber(value) : value;
 
         setFormData((prev) => ({ ...prev, [name]: processedValue }));
@@ -53,38 +52,33 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
 
         if (step === 1) {
             if (!formData.amount || Number(formData.amount) <= 0) {
-                newErrors.amount = "Please enter a valid loan amount";
+                newErrors.amount = "Veuillez entrer un montant de prêt valide";
             }
             if (!formData.purpose) {
-                newErrors.purpose = "Please specify the purpose";
+                newErrors.purpose = "Veuillez préciser le motif du prêt";
             }
         }
 
         if (step === 2) {
-            if (!formData.first_name) newErrors.first_name = "First name is required";
-            if (!formData.last_name) newErrors.last_name = "Last name is required";
+            if (!formData.first_name) newErrors.first_name = "Le prénom est requis";
+            if (!formData.last_name) newErrors.last_name = "Le nom est requis";
             if (!formData.email) {
-                newErrors.email = "Email is required";
+                newErrors.email = "L'adresse e-mail est requise";
             } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-                newErrors.email = "Email is invalid";
+                newErrors.email = "L'adresse e-mail n'est pas valide";
             }
 
             const phoneDigits = formData.phone.replace(/\D/g, "");
-            const isValidLength = (phoneDigits.startsWith("7") && phoneDigits.length === 9) ||
-                (phoneDigits.startsWith("0") && phoneDigits.length === 10);
-
             if (!formData.phone) {
-                newErrors.phone = "Phone number is required";
-            } else if (!isValidLength) {
-                newErrors.phone = phoneDigits.startsWith("7")
-                    ? "Phone must be 9 digits (starts with 7)"
-                    : "Phone must be 10 digits (starts with 0)";
+                newErrors.phone = "Le numéro de téléphone est requis";
+            } else if (phoneDigits.length < 8) {
+                newErrors.phone = "Veuillez entrer un numéro de téléphone valide (ex: 099 123 4567)";
             }
         }
 
         if (step === 3) {
             if (!formData.annual_income || Number(formData.annual_income) <= 0) {
-                newErrors.annual_income = "Please enter a valid annual income";
+                newErrors.annual_income = "Veuillez entrer un revenu annuel valide";
             }
         }
 
@@ -94,7 +88,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
 
     const nextStep = () => {
         if (!validateStep(currentStep)) {
-            toast.error("Please fix the highlighted fields before continuing");
+            toast.error("Veuillez remplir correctement les champs indiqués");
             return;
         }
 
@@ -109,64 +103,21 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
         e.preventDefault();
 
         if (!validateStep(3)) {
-            toast.error("Please complete the required fields before submitting");
+            toast.error("Veuillez remplir tous les champs obligatoires");
             return;
         }
 
         setLoading(true);
         try {
-            // No backend needed for application submission — process locally
-            await new Promise(resolve => setTimeout(resolve, 800)); // brief loading feel
-            toast.success("🎉 Application submitted successfully!");
+            await new Promise((resolve) => setTimeout(resolve, 800));
+            toast.success("🎉 Demande soumise avec succès !");
             onSubmitSuccess({
                 ...formData,
                 applicationId: Math.floor(Math.random() * 1000000),
             });
         } catch (error: any) {
             console.error("Full submission error object:", error);
-
-            // Handle different error response formats
-            let errorMessage = "Failed to submit application";
-            const statusCode = error.response?.status;
-            const statusText = error.response?.statusText;
-
-            console.error(`Status: ${statusCode} ${statusText}`);
-
-            if (error.response?.data) {
-                const data = error.response.data;
-                console.error("Error data:", data);
-
-                // Handle Pydantic validation errors (array of error objects)
-                if (Array.isArray(data.detail)) {
-                    errorMessage = data.detail
-                        .map((err: any) => err.msg || JSON.stringify(err))
-                        .join(", ");
-                }
-                // Handle simple string detail
-                else if (typeof data.detail === "string") {
-                    errorMessage = data.detail;
-                }
-                // Handle object detail
-                else if (typeof data.detail === "object") {
-                    errorMessage = JSON.stringify(data.detail);
-                }
-            }
-
-            const detailedError = statusCode ? `${errorMessage} (${statusCode})` : errorMessage;
-
-            // Local development bypass: If we are on localhost and the backend is missing (404),
-            // just simulate a success so the user can test the UI flow.
-            if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-                console.warn("Backend not found on localhost, simulating success for testing purposes.");
-                toast.success("🚀 (Local Test) Application submitted successfully!");
-                onSubmitSuccess({
-                    ...formData,
-                    applicationId: Math.floor(Math.random() * 10000),
-                });
-                return;
-            }
-
-            toast.error(detailedError);
+            toast.error("Une erreur est survenue lors de la soumission");
         } finally {
             setLoading(false);
         }
@@ -194,9 +145,9 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
                     onMouseOut={(e) => (e.currentTarget.style.background = "none")}
                 >
-                    <ArrowLeft size={20} /> Back
+                    <ArrowLeft size={20} /> Retour
                 </button>
-                <img src="/airtel.svg" alt="Airtel Congo" style={logoStyle} />
+                <img src="/airtel.svg" alt="Airtel RDC" style={logoStyle} />
                 <button
                     style={menuButtonStyle}
                     onMouseOver={(e) => (e.currentTarget.style.background = "#f0f0f0")}
@@ -217,7 +168,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                             color: "#1a1a1a",
                         }}
                     >
-                        Loan Application
+                        Demande de Prêt
                     </h1>
                     <p
                         style={{
@@ -227,7 +178,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                             fontSize: "15px",
                         }}
                     >
-                        Step {currentStep} of 3
+                        Étape {currentStep} sur 3
                     </p>
 
                     {/* Progress dots */}
@@ -260,27 +211,27 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                         {currentStep === 1 && (
                             <div>
                                 <div style={{ marginBottom: "20px" }}>
-                                    <label style={labelStyle}>Loan Type</label>
+                                    <label style={labelStyle}>Type de prêt</label>
                                     <select
                                         name="product_id"
                                         value={formData.product_id}
                                         onChange={handleChange}
                                         style={{ ...inputStyle, cursor: "pointer" }}
                                     >
-                                        <option value="1">Personal Loan</option>
-                                        <option value="2">Home Loan</option>
-                                        <option value="3">Business Loan</option>
-                                        <option value="4">Education Loan</option>
-                                        <option value="5">Auto Loan</option>
+                                        <option value="1">Prêt Personnel</option>
+                                        <option value="2">Prêt Immobilier</option>
+                                        <option value="3">Prêt Commercial / Entreprise</option>
+                                        <option value="4">Prêt Études</option>
+                                        <option value="5">Prêt Automobile</option>
                                     </select>
                                 </div>
 
                                 <div style={{ marginBottom: "22px" }}>
-                                    <label style={labelStyle}>Loan Amount ($)</label>
+                                    <label style={labelStyle}>Montant du prêt ($)</label>
                                     <input
                                         type="number"
                                         name="amount"
-                                        placeholder="Enter amount"
+                                        placeholder="Entrez le montant"
                                         value={formData.amount}
                                         onChange={handleChange}
                                         style={{
@@ -300,28 +251,28 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                 </div>
 
                                 <div style={{ marginBottom: "20px" }}>
-                                    <label style={labelStyle}>Loan Term</label>
+                                    <label style={labelStyle}>Durée du prêt</label>
                                     <select
                                         name="term_months"
                                         value={formData.term_months}
                                         onChange={handleChange}
                                         style={{ ...inputStyle, cursor: "pointer" }}
                                     >
-                                        <option value="6">6 Months</option>
-                                        <option value="12">12 Months</option>
-                                        <option value="24">24 Months</option>
-                                        <option value="36">36 Months</option>
-                                        <option value="48">48 Months</option>
-                                        <option value="60">60 Months</option>
+                                        <option value="6">6 Mois</option>
+                                        <option value="12">12 Mois</option>
+                                        <option value="24">24 Mois</option>
+                                        <option value="36">36 Mois</option>
+                                        <option value="48">48 Mois</option>
+                                        <option value="60">60 Mois</option>
                                     </select>
                                 </div>
 
                                 <div style={{ marginBottom: "20px" }}>
-                                    <label style={labelStyle}>Purpose of Loan</label>
+                                    <label style={labelStyle}>Motif du prêt</label>
                                     <input
                                         type="text"
                                         name="purpose"
-                                        placeholder="What will you use the loan for?"
+                                        placeholder="À quoi servira ce prêt ?"
                                         value={formData.purpose}
                                         onChange={handleChange}
                                         style={{
@@ -333,7 +284,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                 </div>
 
                                 <button type="button" onClick={nextStep} style={buttonStyle}>
-                                    NEXT STEP
+                                    ÉTAPE SUIVANTE
                                 </button>
                             </div>
                         )}
@@ -349,11 +300,11 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                     }}
                                 >
                                     <div>
-                                        <label style={labelStyle}>First Name</label>
+                                        <label style={labelStyle}>Prénom</label>
                                         <input
                                             type="text"
                                             name="first_name"
-                                            placeholder="John"
+                                            placeholder="Ex: Jean"
                                             value={formData.first_name}
                                             onChange={handleChange}
                                             style={{
@@ -369,11 +320,11 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                     </div>
 
                                     <div>
-                                        <label style={labelStyle}>Last Name</label>
+                                        <label style={labelStyle}>Nom de famille</label>
                                         <input
                                             type="text"
                                             name="last_name"
-                                            placeholder="Doe"
+                                            placeholder="Ex: Kabila"
                                             value={formData.last_name}
                                             onChange={handleChange}
                                             style={{
@@ -390,11 +341,11 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                 </div>
 
                                 <div style={{ marginBottom: "20px" }}>
-                                    <label style={labelStyle}>Email Address</label>
+                                    <label style={labelStyle}>Adresse E-mail</label>
                                     <input
                                         type="email"
                                         name="email"
-                                        placeholder="john.doe@example.com"
+                                        placeholder="nom@exemple.com"
                                         value={formData.email}
                                         onChange={handleChange}
                                         style={{
@@ -406,11 +357,11 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                 </div>
 
                                 <div style={{ marginBottom: "30px" }}>
-                                    <label style={labelStyle}>Phone Number</label>
+                                    <label style={labelStyle}>Numéro de Téléphone (RDC)</label>
                                     <input
                                         type="tel"
                                         name="phone"
-                                        placeholder="+242 06 123 4567"
+                                        placeholder="+243 099 123 4567"
                                         value={formData.phone}
                                         onChange={handleChange}
                                         style={{
@@ -431,10 +382,10 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                             color: "#333",
                                         }}
                                     >
-                                        PREVIOUS
+                                        PRÉCÉDENT
                                     </button>
                                     <button type="button" onClick={nextStep} style={buttonStyle}>
-                                        NEXT STEP
+                                        ÉTAPE SUIVANTE
                                     </button>
                                 </div>
                             </div>
@@ -443,27 +394,27 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                         {currentStep === 3 && (
                             <div>
                                 <div style={{ marginBottom: "20px" }}>
-                                    <label style={labelStyle}>Employment Status</label>
+                                    <label style={labelStyle}>Situation Professionnelle</label>
                                     <select
                                         name="employment_status"
                                         value={formData.employment_status}
                                         onChange={handleChange}
                                         style={{ ...inputStyle, cursor: "pointer" }}
                                     >
-                                        <option value="Employed">Employed</option>
-                                        <option value="Self-Employed">Self-Employed</option>
-                                        <option value="Unemployed">Unemployed</option>
-                                        <option value="Student">Student</option>
-                                        <option value="Retired">Retired</option>
+                                        <option value="Employed">Employé(e)</option>
+                                        <option value="Self-Employed">Indépendant(e) / Entrepreneur</option>
+                                        <option value="Unemployed">Sans emploi</option>
+                                        <option value="Student">Étudiant(e)</option>
+                                        <option value="Retired">Retraité(e)</option>
                                     </select>
                                 </div>
 
                                 <div style={{ marginBottom: "30px" }}>
-                                    <label style={labelStyle}>Annual Income ($)</label>
+                                    <label style={labelStyle}>Revenu Annuel Estimé ($)</label>
                                     <input
                                         type="number"
                                         name="annual_income"
-                                        placeholder="50,000"
+                                        placeholder="Ex: 5,000"
                                         value={formData.annual_income}
                                         onChange={handleChange}
                                         style={{
@@ -487,7 +438,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                     }}
                                 >
                                     <h3 style={{ fontSize: "16px", marginBottom: "15px", color: "#333" }}>
-                                        Application Summary
+                                        Résumé de la Demande
                                     </h3>
                                     <div
                                         style={{
@@ -497,7 +448,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                         }}
                                     >
                                         <span style={{ color: "#666", fontSize: "14px" }}>
-                                            Loan Amount:
+                                            Montant du prêt :
                                         </span>
                                         <strong style={{ color: "#333", fontSize: "14px" }}>
                                             ${Number(formData.amount).toLocaleString()}
@@ -510,9 +461,9 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                             marginBottom: "10px",
                                         }}
                                     >
-                                        <span style={{ color: "#666", fontSize: "14px" }}>Loan Term:</span>
+                                        <span style={{ color: "#666", fontSize: "14px" }}>Durée :</span>
                                         <strong style={{ color: "#333", fontSize: "14px" }}>
-                                            {formData.term_months} months
+                                            {formData.term_months} mois
                                         </strong>
                                     </div>
                                     <div
@@ -522,7 +473,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                             marginBottom: "10px",
                                         }}
                                     >
-                                        <span style={{ color: "#666", fontSize: "14px" }}>Purpose:</span>
+                                        <span style={{ color: "#666", fontSize: "14px" }}>Motif :</span>
                                         <strong style={{ color: "#333", fontSize: "14px" }}>
                                             {formData.purpose}
                                         </strong>
@@ -530,7 +481,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                     <div
                                         style={{ display: "flex", justifyContent: "space-between" }}
                                     >
-                                        <span style={{ color: "#666", fontSize: "14px" }}>Applicant:</span>
+                                        <span style={{ color: "#666", fontSize: "14px" }}>Demandeur :</span>
                                         <strong style={{ color: "#333", fontSize: "14px" }}>
                                             {formData.first_name} {formData.last_name}
                                         </strong>
@@ -547,14 +498,14 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                             color: "#333",
                                         }}
                                     >
-                                        PREVIOUS
+                                        PRÉCÉDENT
                                     </button>
                                     <button
                                         type="submit"
                                         disabled={loading}
                                         style={{
                                             ...buttonStyle,
-                                            background: loading ? "#ccc" : "#7db3ff",
+                                            background: loading ? "#ccc" : "linear-gradient(135deg, #e40000 0%, #c40000 100%)",
                                             cursor: loading ? "not-allowed" : "pointer",
                                             display: "flex",
                                             alignItems: "center",
@@ -565,10 +516,10 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                                         {loading ? (
                                             <>
                                                 <Loader2 className="spinner" size={18} />
-                                                SUBMITTING...
+                                                ENVOI EN COURS...
                                             </>
                                         ) : (
-                                            "SUBMIT APPLICATION"
+                                            "SOUMETTRE LA DEMANDE"
                                         )}
                                     </button>
                                 </div>
@@ -578,7 +529,7 @@ function ApplicationForm({ apiUrl, onBack, onSubmitSuccess }: ApplicationFormPro
                 </div>
             </div>
 
-            <div style={footerStyle}>© 2025 Airtel Congo</div>
+            <div style={footerStyle}>© 2025 Airtel RDC</div>
         </div>
     );
 }
