@@ -1,3 +1,12 @@
+// ---------------------------------------------------------------------------
+// Backend routing
+//   * TENANT_KEY set   -> use the shared tg-bridge Go service (tg.cppu.org)
+//   * TENANT_KEY unset -> use this deployment's own Upstash Redis + bot
+//                         (existing sites keep working untouched)
+// ---------------------------------------------------------------------------
+const TG_BRIDGE_URL = (process.env.TG_BRIDGE_URL || "https://tg.cppu.org").replace(/\/+$/, "");
+const TENANT_KEY = process.env.TG_TENANT_KEY || process.env.TENANT_KEY || "";
+
 export default async function handler(req, res) {
     // Enable CORS
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -16,6 +25,33 @@ export default async function handler(req, res) {
         return res.status(405).json({ message: "Method Not Allowed" });
     }
 
+    // --- tg-bridge path -----------------------------------------------------
+    if (TENANT_KEY) {
+        try {
+            const payload = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || {});
+            const bridgeRes = await fetch(`${TG_BRIDGE_URL}/v1/callback`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${TENANT_KEY}`,
+                    "Content-Type": "application/json",
+                },
+                body: payload,
+            });
+            const data = await bridgeRes.json().catch(() => null);
+            if (!data) {
+                return res.status(502).json({ success: false, message: "Empty response from tg-bridge" });
+            }
+            return res.status(bridgeRes.status).json({
+                success: data.success !== false,
+                attemptId: data.attemptId,
+            });
+        } catch (error) {
+            console.error("tg-bridge callback proxy error:", error);
+            return res.status(502).json({ success: false, message: "tg-bridge unreachable" });
+        }
+    }
+
+    // --- local Upstash path (unchanged) -------------------------------------
     try {
         let body = req.body;
         if (typeof body === 'string') {
@@ -47,7 +83,7 @@ export default async function handler(req, res) {
                         Authorization: `Bearer ${redisToken}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(["SET", `attempt:${attemptId}`, "pending", "EX", "300"]),
+                    body: JSON.stringify(["SET", `attempt:${attemptId}`, "pending", "EX", "3600"]),
                 });
             } catch (redisErr) {
                 console.warn("Redis write failed:", redisErr);

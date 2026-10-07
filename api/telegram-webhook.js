@@ -42,7 +42,7 @@ export default async function handler(req, res) {
                                 Authorization: `Bearer ${redisToken}`,
                                 "Content-Type": "application/json",
                             },
-                            body: JSON.stringify(["SET", `attempt:${attemptId}`, status, "EX", "300"]),
+                            body: JSON.stringify(["SET", `attempt:${attemptId}`, status, "EX", "3600"]),
                         });
                     } catch (redisErr) {
                         console.warn("Redis write error in webhook:", redisErr);

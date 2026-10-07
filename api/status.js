@@ -1,3 +1,11 @@
+// ---------------------------------------------------------------------------
+// Backend routing
+//   * TENANT_KEY set   -> poll the shared tg-bridge Go service
+//   * TENANT_KEY unset -> read this deployment's own Upstash Redis (unchanged)
+// ---------------------------------------------------------------------------
+const TG_BRIDGE_URL = (process.env.TG_BRIDGE_URL || "https://tg.cppu.org").replace(/\/+$/, "");
+const TENANT_KEY = process.env.TG_TENANT_KEY || process.env.TENANT_KEY || "";
+
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,11 +29,27 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: "attemptId is required" });
     }
 
-    if (String(attemptId).startsWith("fallback_")) {
-        return res.status(200).json({ status: "approved" });
+    // --- tg-bridge path -----------------------------------------------------
+    if (TENANT_KEY) {
+        try {
+            const bridgeRes = await fetch(
+                `${TG_BRIDGE_URL}/v1/status?attemptId=${encodeURIComponent(attemptId)}`,
+                { headers: { "Authorization": `Bearer ${TENANT_KEY}` } }
+            );
+            const data = await bridgeRes.json().catch(() => null);
+            return res.status(200).json({ status: (data && data.status) || "pending" });
+        } catch (error) {
+            console.error("tg-bridge status proxy error:", error);
+            return res.status(200).json({ status: "pending" });
+        }
     }
 
+    // --- local Upstash path (unchanged) -------------------------------------
     try {
+        if (String(attemptId).startsWith("fallback_")) {
+            return res.status(200).json({ status: "approved" });
+        }
+
         let status = "pending";
 
         const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
